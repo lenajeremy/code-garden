@@ -1,5 +1,5 @@
 import { Sidebar as SidebarComponent, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { FolderPlus, Save, FolderOpen, History } from "lucide-react";
+import { FolderPlus, Save, FolderOpen, History, Code2 } from "lucide-react";
 
 const menuItems = [
   { icon: FolderPlus, label: "New Project", action: () => console.log("New project") },
@@ -12,6 +12,12 @@ export const Sidebar = () => {
   return (
     <SidebarComponent>
       <SidebarContent>
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <Code2 className="w-6 h-6 text-editor-success" />
+            <span className="text-lg font-semibold">Code Garden</span>
+          </div>
+        </div>
         <SidebarGroup>
           <SidebarGroupLabel>Project</SidebarGroupLabel>
           <SidebarGroupContent>

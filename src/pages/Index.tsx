@@ -2,18 +2,18 @@ import * as React from 'react';
 import {Layout} from "@/components/Layout";
 import {CodeEditor} from "@/components/Editor";
 import MainContext from "@/lib/main-context.tsx";
-import {Language} from "@/lib/constant.ts";
+import {DefaultLanguage, Language} from "@/lib/constant.ts";
 
 const Index = () => {
     return (
         <Layout>
-            <CodeEditor />
+            <CodeEditor/>
         </Layout>
     );
 };
 
 const IndexWithProvider = () => {
-    const [lang, setLang] = React.useState<Language>("Java");
+    const [lang, setLang] = React.useState<Language>(DefaultLanguage);
     return (
         <MainContext.Provider value={{currLanguage: lang, setLanguage: setLang}}>
             <Index/>

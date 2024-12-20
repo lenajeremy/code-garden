@@ -24,7 +24,7 @@ export const CodeEditor = () => {
                         <Editor
                             height="100%"
                             theme="vs-dark"
-                            value={language}
+                            value={code}
                             onChange={handleEditorChange}
                             defaultLanguage={language.toLowerCase()}
                             language={language.toLowerCase()}

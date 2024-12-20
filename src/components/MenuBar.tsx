@@ -3,13 +3,13 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Button} from "@/components/ui/button";
 import {Code2, Play, Share2} from "lucide-react";
 import {useToast} from "@/hooks/use-toast";
-import {Language, languages} from "@/lib/constant.ts";
+import {DefaultLanguage, Language, languages} from "@/lib/constant.ts";
 import MainContext from "@/lib/main-context.tsx";
 
 
 export const MenuBar = () => {
     const {toast} = useToast();
-    const {setLanguage, currLanguage: l} = React.useContext(MainContext)
+    const {setLanguage} = React.useContext(MainContext)
 
     const handleRun = () => {
         console.log("Running code");
@@ -34,14 +34,14 @@ export const MenuBar = () => {
             <div className="border-b border-border p-4">
                 <div className="flex items-center gap-2">
                     <Code2 className="w-6 h-6 text-editor-success"/>
-                    <span className="text-lg font-semibold">Code Garden {l}</span>
+                    <span className="text-lg font-semibold">Code Garden</span>
                 </div>
             </div>
 
             {/* Action buttons below */}
             <div className="p-4 flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4 flex-wrap">
-                    <Select onValueChange={(v: Language) => setLanguage(v)}>
+                    <Select defaultValue={DefaultLanguage.toLowerCase()} onValueChange={(v: Language) => setLanguage(v)}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select Language"/>
                         </SelectTrigger>

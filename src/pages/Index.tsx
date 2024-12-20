@@ -1,10 +1,10 @@
 import { Layout } from "@/components/Layout";
-import { Editor } from "@/components/Editor";
+import { CodeEditor } from "@/components/Editor";
 
 const Index = () => {
   return (
     <Layout>
-      <Editor />
+      <CodeEditor />
     </Layout>
   );
 };

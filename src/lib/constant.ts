@@ -4,4 +4,4 @@ export const languages = [
 ] as const;
 
 export type Language = typeof languages[number];
-export const DefaultLanguage: Language = "TypeScript"
+export const DefaultLanguage: Language = "Python"

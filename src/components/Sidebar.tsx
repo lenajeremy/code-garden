@@ -14,7 +14,7 @@ export const Sidebar = () => {
       <SidebarContent>
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <Code2 className="w-6 h-6 text-editor-success" />
+            <Code2 className="w-6 h-10 text-editor-success" />
             <span className="text-lg font-semibold">Code Garden</span>
           </div>
         </div>

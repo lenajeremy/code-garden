@@ -9,20 +9,31 @@ import MainContext from "@/lib/main-context.tsx";
 
 export const MenuBar = () => {
     const {toast} = useToast();
-  const [isRunning, setIsRunning] = React.useState(false);
-    const {setLanguage} = React.useContext(MainContext)
+    const [isRunning, setIsRunning] = React.useState(false);
+    const {setLanguage, currLanguage, code, setOutput} = React.useContext(MainContext)
 
     const handleRun = async () => {
-    setIsRunning(true);
-        console.log("Running code");
+        setIsRunning(true);
         toast({
             title: "Executing code...",
             description: "Your code is being compiled and executed.",
         });
 
-    // Simulate code execution with a 3-second delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    setIsRunning(false);
+        try {
+            const res = await fetch("http://localhost:8000", {
+                method: "POST",
+                body: JSON.stringify({language: currLanguage.toLowerCase(), code})
+            })
+            const data = await res.json()
+            setOutput(data.output)
+        } catch (error) {
+            toast({
+                title: "Error executing code",
+                description: error.message,
+            })
+        } finally {
+            setIsRunning(false);
+        }
     };
 
     const handleShare = () => {
@@ -34,40 +45,40 @@ export const MenuBar = () => {
         });
     };
 
-  return (
-    <div className="border-b border-border">
-      <div className="p-4 flex items-center justify-between flex-wrap gap-4">
-        <Select defaultValue={DefaultLanguage.toLowerCase()} onValueChange={(v: Language) => setLanguage(v)}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Language" />
-          </SelectTrigger>
-          <SelectContent>
-            {languages.map((lang) => (
-              <SelectItem key={lang} value={lang.toLowerCase()}>
-                {lang}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="flex items-center gap-4">
-          <Button variant="outline" onClick={handleShare}>
-            <Share2 className="w-4 h-4 mr-2" />
-            Share
-          </Button>
-          <Button 
-            onClick={handleRun} 
-            className="bg-editor-success hover:bg-editor-success/90"
-            disabled={isRunning}
-          >
-            {isRunning ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              <Play className="w-4 h-4 mr-2" />
-            )}
-            Run
-          </Button>
+    return (
+        <div className="border-b border-border">
+            <div className="p-4 flex items-center justify-between flex-wrap gap-4">
+                <Select defaultValue={DefaultLanguage.toLowerCase()} onValueChange={(v: Language) => setLanguage(v)}>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select Language"/>
+                    </SelectTrigger>
+                    <SelectContent>
+                        {languages.map((lang) => (
+                            <SelectItem key={lang} value={lang.toLowerCase()}>
+                                {lang}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <div className="flex items-center gap-4">
+                    <Button variant="outline" onClick={handleShare}>
+                        <Share2 className="w-4 h-4 mr-2"/>
+                        Share
+                    </Button>
+                    <Button
+                        onClick={handleRun}
+                        className="bg-editor-success hover:bg-editor-success/90"
+                        disabled={isRunning}
+                    >
+                        {isRunning ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin"/>
+                        ) : (
+                            <Play className="w-4 h-4 mr-2"/>
+                        )}
+                        Run
+                    </Button>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };

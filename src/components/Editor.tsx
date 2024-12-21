@@ -1,13 +1,10 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {useContext} from "react";
 import Editor from "@monaco-editor/react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import MainContext from "@/lib/main-context.tsx";
 
 export const CodeEditor = () => {
-    const [code, setCode] = useState(`// Write your code here...`);
-    const [output, setOutput] = useState("");
-    const {currLanguage: language} = useContext(MainContext);
-
+    const {currLanguage: language, code, setCode, output} = useContext(MainContext);
 
     const handleEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
@@ -15,9 +12,8 @@ export const CodeEditor = () => {
         }
     };
 
-
     return (
-        <div className="h-[calc(100vh-12rem)]">
+        <div className="h-[calc(100vh-8rem)] pt-4">
             <ResizablePanelGroup direction="vertical" className="h-full">
                 <ResizablePanel defaultSize={70}>
                     <div className="h-full">
@@ -44,8 +40,8 @@ export const CodeEditor = () => {
                     <div className="h-full bg-editor-bg p-4">
                         <div className="text-sm text-editor-lineNumber mb-2">Output:</div>
                         <pre className="font-mono text-sm whitespace-pre-wrap h-full overflow-auto">
-              {output || "Program output will appear here..."}
-            </pre>
+                            {`${output}` || "Program output will appear here..."}
+                        </pre>
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>

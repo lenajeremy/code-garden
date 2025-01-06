@@ -1,4 +1,4 @@
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import Editor from "@monaco-editor/react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";

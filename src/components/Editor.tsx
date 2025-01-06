@@ -53,46 +53,61 @@ export const CodeEditor = () => {
                 </ResizablePanel>
                 <ResizableHandle withHandle/>
                 <ResizablePanel defaultSize={30}>
-                    <div className="h-full bg-editor-bg p-4">
+                    <div className="h-full bg-editor-bg">
                         <Tabs defaultValue="output" className="w-full">
-                            <TabsList className="w-full grid grid-cols-3">
-                                <TabsTrigger value="output" className="data-[state=active]:bg-editor-success/20">Output</TabsTrigger>
-                                <TabsTrigger value="errors" className="data-[state=active]:bg-editor-error/20">Errors</TabsTrigger>
-                                <TabsTrigger value="stats" className="data-[state=active]:bg-editor-accent/20">Stats</TabsTrigger>
+                            <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-border">
+                                <TabsTrigger 
+                                    value="output" 
+                                    className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
+                                >
+                                    Output
+                                </TabsTrigger>
+                                <TabsTrigger 
+                                    value="errors" 
+                                    className="data-[state=active]:text-editor-error data-[state=active]:border-b-2 data-[state=active]:border-editor-error rounded-none"
+                                >
+                                    Errors
+                                </TabsTrigger>
+                                <TabsTrigger 
+                                    value="stats" 
+                                    className="data-[state=active]:text-editor-accent data-[state=active]:border-b-2 data-[state=active]:border-editor-accent rounded-none"
+                                >
+                                    Stats
+                                </TabsTrigger>
                             </TabsList>
-                            <TabsContent value="output" className="mt-4">
-                                <div className="font-mono text-sm rounded-md bg-editor-bg/50 p-4 h-[calc(100%-2rem)] overflow-auto">
+                            <TabsContent value="output" className="mt-0 p-4">
+                                <div className="font-mono text-sm">
                                     {output || "Program output will appear here..."}
                                 </div>
                             </TabsContent>
-                            <TabsContent value="errors" className="mt-4">
+                            <TabsContent value="errors" className="mt-0 p-4">
                                 <div className="space-y-2">
                                     {errors.length > 0 ? (
                                         errors.map((error, index) => (
-                                            <div key={index} className="flex items-center gap-2 text-editor-error bg-editor-error/10 p-3 rounded-md">
+                                            <div key={index} className="flex items-center gap-2 text-editor-error">
                                                 <span className="inline-block w-2 h-2 rounded-full bg-editor-error"></span>
                                                 <span className="font-mono text-sm">{error}</span>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="flex items-center gap-2 text-editor-success bg-editor-success/10 p-3 rounded-md">
+                                        <div className="flex items-center gap-2 text-editor-success">
                                             <span className="inline-block w-2 h-2 rounded-full bg-editor-success"></span>
                                             <span className="font-mono text-sm">No errors</span>
                                         </div>
                                     )}
                                 </div>
                             </TabsContent>
-                            <TabsContent value="stats" className="mt-4">
-                                <div className="space-y-3 font-mono text-sm bg-editor-bg/50 p-4 rounded-md">
+                            <TabsContent value="stats" className="mt-0 p-4">
+                                <div className="space-y-3 font-mono text-sm">
                                     <div className="flex items-center justify-between">
                                         <span className="text-editor-text/70">Runtime:</span>
-                                        <span className="px-2 py-1 rounded bg-editor-accent/20 text-editor-accent">
+                                        <span className="text-editor-accent">
                                             {stats.runtime}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-editor-text/70">Memory Usage:</span>
-                                        <span className="px-2 py-1 rounded bg-editor-accent/20 text-editor-accent">
+                                        <span className="text-editor-accent">
                                             {stats.memory}
                                         </span>
                                     </div>

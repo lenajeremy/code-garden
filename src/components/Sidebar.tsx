@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { languages } from "@/lib/constant";
 import { useContext } from "react";
 import MainContext from "@/lib/main-context";
@@ -45,12 +46,13 @@ export const Sidebar = () => {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[500px]">
                             <DialogHeader>
-                                <DialogTitle>Settings</DialogTitle>
+                                <DialogTitle className="text-xl font-semibold">Settings</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-6">
                                 {/* Editor Settings */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold">Editor Settings</h3>
+                                    <h3 className="text-base font-medium text-muted-foreground">Editor Settings</h3>
+                                    <Separator className="my-4" />
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <Label htmlFor="fontSize">Font Size</Label>
@@ -78,7 +80,8 @@ export const Sidebar = () => {
 
                                 {/* General Settings */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold">General Settings</h3>
+                                    <h3 className="text-base font-medium text-muted-foreground">General Settings</h3>
+                                    <Separator className="my-4" />
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="darkMode">Dark Mode</Label>
                                         <Switch id="darkMode" />
@@ -87,7 +90,8 @@ export const Sidebar = () => {
 
                                 {/* Language Settings */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold">Language Settings</h3>
+                                    <h3 className="text-base font-medium text-muted-foreground">Language Settings</h3>
+                                    <Separator className="my-4" />
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="defaultLang">Default Language</Label>
                                         <Select 

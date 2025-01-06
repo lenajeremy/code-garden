@@ -13,7 +13,7 @@ export const CodeEditor = () => {
     };
 
     return (
-        <div className="h-[calc(100vh-8rem)] pt-4">
+        <div className="h-[calc(100vh-10rem)] pt-4">
             <ResizablePanelGroup direction="vertical" className="h-full">
                 <ResizablePanel defaultSize={70}>
                     <div className="h-full">

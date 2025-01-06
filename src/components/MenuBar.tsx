@@ -20,7 +20,7 @@ export const MenuBar = () => {
         });
 
         try {
-            const res = await fetch("http://localhost:8000", {
+            const res = await fetch("http://localhost:3000/run-safe", {
                 method: "POST",
                 body: JSON.stringify({language: currLanguage.toLowerCase(), code})
             })

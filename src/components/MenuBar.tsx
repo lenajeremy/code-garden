@@ -14,6 +14,7 @@ import {
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import MainContext from "@/lib/main-context";
+import {Language, languages} from "@/lib/constant";
 
 interface ExecutionSettings {
     timeout: number;
@@ -51,15 +52,25 @@ export const MenuBar = () => {
         });
     };
 
+    const handleLanguageChange = (value: string) => {
+        // Find the matching language with proper casing from our languages array
+        const selectedLanguage = languages.find(
+            lang => lang.toLowerCase() === value.toLowerCase()
+        );
+        if (selectedLanguage) {
+            setLanguage(selectedLanguage);
+        }
+    };
+
     return (
         <div className="border-b border-border">
             <div className="p-4 flex items-center justify-between flex-wrap gap-4">
-                <Select defaultValue={language.toLowerCase()} onValueChange={(v) => setLanguage(v)}>
+                <Select defaultValue={language.toLowerCase()} onValueChange={handleLanguageChange}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select Language"/>
                     </SelectTrigger>
                     <SelectContent>
-                        {["Python", "JavaScript", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Go", "Rust"].map((lang) => (
+                        {languages.map((lang) => (
                             <SelectItem key={lang} value={lang.toLowerCase()}>
                                 {lang}
                             </SelectItem>

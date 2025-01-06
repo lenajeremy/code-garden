@@ -1,7 +1,6 @@
 import { Code2, HelpCircle, Settings, Github, Twitter, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,13 +47,10 @@ export const Sidebar = () => {
                             <DialogHeader>
                                 <DialogTitle>Settings</DialogTitle>
                             </DialogHeader>
-                            <Tabs defaultValue="editor" className="w-full">
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="editor">Editor</TabsTrigger>
-                                    <TabsTrigger value="general">General</TabsTrigger>
-                                    <TabsTrigger value="language">Language</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="editor" className="space-y-4">
+                            <div className="space-y-6">
+                                {/* Editor Settings */}
+                                <div className="space-y-4">
+                                    <h3 className="text-lg font-semibold">Editor Settings</h3>
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <Label htmlFor="fontSize">Font Size</Label>
@@ -78,14 +74,20 @@ export const Sidebar = () => {
                                             </Select>
                                         </div>
                                     </div>
-                                </TabsContent>
-                                <TabsContent value="general" className="space-y-4">
+                                </div>
+
+                                {/* General Settings */}
+                                <div className="space-y-4">
+                                    <h3 className="text-lg font-semibold">General Settings</h3>
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="darkMode">Dark Mode</Label>
                                         <Switch id="darkMode" />
                                     </div>
-                                </TabsContent>
-                                <TabsContent value="language" className="space-y-4">
+                                </div>
+
+                                {/* Language Settings */}
+                                <div className="space-y-4">
+                                    <h3 className="text-lg font-semibold">Language Settings</h3>
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="defaultLang">Default Language</Label>
                                         <Select 
@@ -107,8 +109,8 @@ export const Sidebar = () => {
                                             </SelectContent>
                                         </Select>
                                     </div>
-                                </TabsContent>
-                            </Tabs>
+                                </div>
+                            </div>
                             <DialogFooter>
                                 <Button type="submit">Apply Changes</Button>
                             </DialogFooter>

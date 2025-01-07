@@ -183,9 +183,21 @@ export const MenuBar = () => {
                                     Share
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <SelectTrigger className="w-full border-0 p-0 h-auto font-normal">
-                                        <SelectValue placeholder="Select Language"/>
-                                    </SelectTrigger>
+                                    <Select 
+                                        defaultValue={language.toLowerCase()} 
+                                        onValueChange={handleLanguageChange}
+                                    >
+                                        <SelectTrigger className="w-full border-0 p-0 h-auto font-normal">
+                                            <SelectValue placeholder="Select Language"/>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {languages.map((lang) => (
+                                                <SelectItem key={lang} value={lang.toLowerCase()}>
+                                                    {lang}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

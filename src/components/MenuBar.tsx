@@ -91,9 +91,8 @@ export const MenuBar = () => {
                 <Select 
                     defaultValue={language.toLowerCase()} 
                     onValueChange={handleLanguageChange}
-                    className="hidden md:flex w-[180px]"
                 >
-                    <SelectTrigger>
+                    <SelectTrigger className="hidden md:flex w-[180px]">
                         <SelectValue placeholder="Select Language"/>
                     </SelectTrigger>
                     <SelectContent>

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Mail, MessageSquare, Twitter, WhatsApp, Copy, Send } from "lucide-react";
+import { Facebook, Mail, MessageSquare, Twitter, MessageCircle, Copy, Send } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
@@ -127,7 +127,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
                 size="icon"
                 onClick={() => handleSocialShare('whatsapp')}
               >
-                <WhatsApp className="h-4 w-4" />
+                <MessageCircle className="h-4 w-4" />
               </Button>
               <Button
                 variant="outline"

@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Mail, MessageSquare, Twitter, MessageCircle, Copy, Send } from "lucide-react";
-import { useState } from "react";
+import { Facebook, Mail, MessageSquare, Twitter, MessageCircle, Copy, Send, X } from "lucide-react";
+import { useState, KeyboardEvent } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.string(),
 });
 
 interface ShareModalProps {
@@ -21,6 +21,7 @@ interface ShareModalProps {
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const { toast } = useToast();
   const [isSending, setIsSending] = useState(false);
+  const [emails, setEmails] = useState<string[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,20 +52,56 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
     }
   };
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    const input = event.currentTarget;
+    const email = input.value.trim();
+
+    if ((event.key === ' ' || event.key === 'Enter') && email) {
+      event.preventDefault();
+      
+      if (email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        if (!emails.includes(email)) {
+          setEmails([...emails, email]);
+          form.setValue('email', '');
+        }
+      } else {
+        toast({
+          title: "Invalid email",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const removeEmail = (emailToRemove: string) => {
+    setEmails(emails.filter(email => email !== emailToRemove));
+  };
+
+  const onSubmit = async () => {
+    if (emails.length === 0) {
+      toast({
+        title: "No emails added",
+        description: "Please add at least one email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSending(true);
     try {
-      // Here you would typically make an API call to send the email
-      console.log("Sharing via email to:", values.email);
+      // Here you would typically make an API call to send the emails
+      console.log("Sharing via email to:", emails);
       toast({
-        title: "Share link sent!",
-        description: `An email has been sent to ${values.email}`,
+        title: "Share links sent!",
+        description: `Emails have been sent to ${emails.length} recipient${emails.length > 1 ? 's' : ''}.`,
       });
+      setEmails([]);
       form.reset();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to send share link. Please try again.",
+        description: "Failed to send share links. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -80,7 +117,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         </DialogHeader>
         <div className="flex flex-col space-y-4">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-3">
               <FormField
                 control={form.control}
                 name="email"
@@ -88,15 +125,36 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
                   <FormItem>
                     <FormLabel>Share via email</FormLabel>
                     <FormControl>
-                      <div className="flex space-x-2">
-                        <Input
-                          placeholder="email@example.com"
-                          {...field}
-                        />
-                        <Button type="submit" disabled={isSending}>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send
-                        </Button>
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex flex-wrap gap-2 p-2 bg-background border rounded-md min-h-10">
+                          {emails.map((email, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center gap-1 bg-primary/20 text-primary px-2 py-1 rounded-full text-sm"
+                            >
+                              <span>{email}</span>
+                              <button
+                                type="button"
+                                onClick={() => removeEmail(email)}
+                                className="hover:bg-primary/30 rounded-full p-0.5"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                          <Input
+                            placeholder="Type email and press space or enter"
+                            {...field}
+                            onKeyDown={handleKeyDown}
+                            className="border-0 bg-transparent p-0 focus-visible:ring-0 flex-1 min-w-[200px]"
+                          />
+                        </div>
+                        <div className="flex justify-end">
+                          <Button type="submit" disabled={isSending}>
+                            <Send className="h-4 w-4 mr-2" />
+                            Send
+                          </Button>
+                        </div>
                       </div>
                     </FormControl>
                   </FormItem>
@@ -143,7 +201,6 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
                 variant="outline"
                 size="icon"
                 onClick={() => {
-                  // Here you would typically handle email sharing
                   window.location.href = `mailto:?subject=Check out this code!&body=${encodeURIComponent(window.location.href)}`;
                 }}
               >

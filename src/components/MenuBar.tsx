@@ -22,6 +22,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {useSidebar} from "@/components/ui/sidebar";
+import { ShareModal } from "./ShareModal";
 
 interface ExecutionSettings {
     timeout: number;
@@ -37,6 +38,7 @@ export const MenuBar = () => {
         timeout: 5000,
         memoryLimit: 128,
     });
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
     const handleRun = async () => {
         setIsRunning(true);
@@ -49,15 +51,6 @@ export const MenuBar = () => {
         // Simulate code execution with a 3-second delay
         await new Promise(resolve => setTimeout(resolve, 3000));
         setIsRunning(false);
-    };
-
-    const handleShare = () => {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url);
-        toast({
-            title: "Link copied!",
-            description: "The URL has been copied to your clipboard.",
-        });
     };
 
     const handleLanguageChange = (value: string) => {
@@ -178,7 +171,7 @@ export const MenuBar = () => {
                                         </div>
                                     </DialogContent>
                                 </Dialog>
-                                <DropdownMenuItem onClick={handleShare}>
+                                <DropdownMenuItem onClick={() => setIsShareModalOpen(true)}>
                                     <Share2 className="h-4 w-4 mr-2" />
                                     Share
                                 </DropdownMenuItem>
@@ -205,7 +198,7 @@ export const MenuBar = () => {
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-2">
-                        <Button variant="outline" onClick={handleShare}>
+                        <Button variant="outline" onClick={() => setIsShareModalOpen(true)}>
                             <Share2 className="h-4 w-4 mr-2"/>
                             Share
                         </Button>
@@ -255,6 +248,10 @@ export const MenuBar = () => {
                     </div>
                 </div>
             </div>
+            <ShareModal 
+                isOpen={isShareModalOpen} 
+                onClose={() => setIsShareModalOpen(false)} 
+            />
         </div>
     );
 };

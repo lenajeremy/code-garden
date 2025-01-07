@@ -29,18 +29,18 @@ export const Sidebar = () => {
     return (
         <SidebarComponent>
             <SidebarContent>
-                <div className="p-4 border-b border-border">
-                    <div className="flex items-center gap-2">
+                <div className="p-6 border-b border-border">
+                    <div className="flex items-center gap-3">
                         <Code2 className="w-6 h-6 text-editor-success" />
                         <span className="text-lg font-semibold">Code Garden</span>
                     </div>
                 </div>
 
-                <div className="p-4 space-y-4">
+                <div className="py-6 space-y-6">
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start">
-                                <Settings className="w-4 h-4 mr-2" />
+                            <Button variant="ghost" className="w-full justify-start px-6 hover:bg-background/10">
+                                <Settings className="w-4 h-4 mr-3" />
                                 Settings
                             </Button>
                         </DialogTrigger>
@@ -48,11 +48,10 @@ export const Sidebar = () => {
                             <DialogHeader>
                                 <DialogTitle className="text-xl font-semibold">Settings</DialogTitle>
                             </DialogHeader>
-                            <div className="space-y-6">
-                                {/* Editor Settings */}
+                            <div className="space-y-8">
                                 <div className="space-y-4">
-                                    <h3 className="text-base font-medium text-muted-foreground">Editor Settings</h3>
-                                    <Separator className="my-4" />
+                                    <h3 className="text-sm font-medium text-muted-foreground">Editor Settings</h3>
+                                    <Separator className="w-full" />
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <Label htmlFor="fontSize">Font Size</Label>
@@ -78,20 +77,18 @@ export const Sidebar = () => {
                                     </div>
                                 </div>
 
-                                {/* General Settings */}
                                 <div className="space-y-4">
-                                    <h3 className="text-base font-medium text-muted-foreground">General Settings</h3>
-                                    <Separator className="my-4" />
+                                    <h3 className="text-sm font-medium text-muted-foreground">General Settings</h3>
+                                    <Separator className="w-full" />
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="darkMode">Dark Mode</Label>
                                         <Switch id="darkMode" />
                                     </div>
                                 </div>
 
-                                {/* Language Settings */}
                                 <div className="space-y-4">
-                                    <h3 className="text-base font-medium text-muted-foreground">Language Settings</h3>
-                                    <Separator className="my-4" />
+                                    <h3 className="text-sm font-medium text-muted-foreground">Language Settings</h3>
+                                    <Separator className="w-full" />
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="defaultLang">Default Language</Label>
                                         <Select 
@@ -121,23 +118,25 @@ export const Sidebar = () => {
                         </DialogContent>
                     </Dialog>
 
+                    <Separator className="w-full mx-auto" />
+
                     <Collapsible>
                         <CollapsibleTrigger asChild>
-                            <Button variant="ghost" className="w-full justify-start">
-                                <Code2 className="w-4 h-4 mr-2" />
+                            <Button variant="ghost" className="w-full justify-start px-6 hover:bg-background/10">
+                                <Code2 className="w-4 h-4 mr-3" />
                                 Code Templates
                             </Button>
                         </CollapsibleTrigger>
                         <CollapsibleContent className="space-y-2 mt-2">
                             {Object.entries(codeTemplates).map(([language, templates]) => (
                                 <div key={language} className="pl-6">
-                                    <h4 className="text-sm font-medium mb-2 capitalize">{language}</h4>
+                                    <h4 className="text-sm font-medium mb-2 capitalize px-6">{language}</h4>
                                     {templates.map((template, index) => (
                                         <Button
                                             key={index}
                                             variant="ghost"
                                             size="sm"
-                                            className="w-full justify-start text-sm"
+                                            className="w-full justify-start text-sm px-6 hover:bg-background/10"
                                             onClick={() => console.log(`Load template: ${template.name}`)}
                                         >
                                             {template.name}
@@ -148,20 +147,24 @@ export const Sidebar = () => {
                         </CollapsibleContent>
                     </Collapsible>
 
-                    <Button variant="ghost" className="w-full justify-start">
-                        <HelpCircle className="w-4 h-4 mr-2" />
+                    <Separator className="w-full mx-auto" />
+
+                    <Button variant="ghost" className="w-full justify-start px-6 hover:bg-background/10">
+                        <HelpCircle className="w-4 h-4 mr-3" />
                         Help
                     </Button>
 
-                    <div className="pt-4 border-t border-border">
+                    <Separator className="w-full mx-auto" />
+
+                    <div className="px-6">
                         <div className="flex justify-center space-x-4">
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
                                 <Github className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
                                 <Twitter className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
                                 <Linkedin className="w-4 h-4" />
                             </Button>
                         </div>

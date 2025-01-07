@@ -1,7 +1,6 @@
 import {SidebarProvider} from "@/components/ui/sidebar";
 import {Sidebar} from "./Sidebar";
 import {MenuBar} from "./MenuBar";
-import {Footer} from "./Footer";
 
 export const Layout = ({children}: { children: React.ReactNode }) => {
     return (
@@ -10,8 +9,7 @@ export const Layout = ({children}: { children: React.ReactNode }) => {
                 <Sidebar/>
                 <div className="flex-1 flex flex-col">
                     <MenuBar/>
-                    <main className="flex-1">{children}</main>
-                    <Footer/>
+                    <main className="flex-1 p-6">{children}</main>
                 </div>
             </div>
         </SidebarProvider>

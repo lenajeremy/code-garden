@@ -71,9 +71,9 @@ export const MenuBar = () => {
 
     return (
         <div className="border-b border-border">
-            <div className="p-4 flex items-center justify-between">
-                {/* Mobile Menu */}
-                <div className="flex items-center gap-4">
+            <div className="px-4 py-3 flex items-center justify-between gap-4">
+                {/* Left Section - Logo and Menu */}
+                <div className="flex items-center gap-3">
                     <Button 
                         variant="ghost" 
                         size="icon" 
@@ -82,30 +82,33 @@ export const MenuBar = () => {
                     >
                         <Menu className="h-5 w-5" />
                     </Button>
-                    <div className="flex items-center gap-2">
-                        <span className="font-semibold text-lg hidden md:block">Code Garden</span>
+                    <div className="flex items-center">
+                        <span className="font-semibold text-lg">Code Garden</span>
                     </div>
                 </div>
 
-                {/* Desktop Language Selector */}
-                <Select 
-                    defaultValue={language.toLowerCase()} 
-                    onValueChange={handleLanguageChange}
-                >
-                    <SelectTrigger className="hidden md:flex w-[180px]">
-                        <SelectValue placeholder="Select Language"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                        {languages.map((lang) => (
-                            <SelectItem key={lang} value={lang.toLowerCase()}>
-                                {lang}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                {/* Center Section - Language Selector (Desktop Only) */}
+                <div className="hidden md:flex flex-1 justify-center">
+                    <Select 
+                        defaultValue={language.toLowerCase()} 
+                        onValueChange={handleLanguageChange}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select Language"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            {languages.map((lang) => (
+                                <SelectItem key={lang} value={lang.toLowerCase()}>
+                                    {lang}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
 
-                {/* Actions */}
+                {/* Right Section - Actions */}
                 <div className="flex items-center gap-2">
+                    {/* Run Button */}
                     <Button
                         onClick={handleRun}
                         className="bg-editor-success hover:bg-editor-success/90"
@@ -122,26 +125,71 @@ export const MenuBar = () => {
                         )}
                     </Button>
 
-                    {/* Mobile Dropdown */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="md:hidden">
-                            <Button variant="outline" size="icon">
-                                <Settings2 className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DialogTrigger asChild>
-                                <DropdownMenuItem>
-                                    <Settings2 className="h-4 w-4 mr-2" />
-                                    Settings
+                    {/* Mobile Dropdown Menu */}
+                    <div className="md:hidden">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="icon">
+                                    <Settings2 className="h-4 w-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <DropdownMenuItem>
+                                            <Settings2 className="h-4 w-4 mr-2" />
+                                            Editor Settings
+                                        </DropdownMenuItem>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Execution Settings</DialogTitle>
+                                            <DialogDescription>
+                                                Configure code execution parameters
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="timeout">Timeout (ms)</Label>
+                                                <Input
+                                                    id="timeout"
+                                                    type="number"
+                                                    value={settings.timeout}
+                                                    onChange={(e) => setSettings(prev => ({
+                                                        ...prev,
+                                                        timeout: parseInt(e.target.value)
+                                                    }))}
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="memory">Memory (MB)</Label>
+                                                <Input
+                                                    id="memory"
+                                                    type="number"
+                                                    value={settings.memoryLimit}
+                                                    onChange={(e) => setSettings(prev => ({
+                                                        ...prev,
+                                                        memoryLimit: parseInt(e.target.value)
+                                                    }))}
+                                                    className="col-span-3"
+                                                />
+                                            </div>
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
+                                <DropdownMenuItem onClick={handleShare}>
+                                    <Share2 className="h-4 w-4 mr-2" />
+                                    Share
                                 </DropdownMenuItem>
-                            </DialogTrigger>
-                            <DropdownMenuItem onClick={handleShare}>
-                                <Share2 className="h-4 w-4 mr-2" />
-                                Share
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                <DropdownMenuItem>
+                                    <SelectTrigger className="w-full border-0 p-0 h-auto font-normal">
+                                        <SelectValue placeholder="Select Language"/>
+                                    </SelectTrigger>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-2">

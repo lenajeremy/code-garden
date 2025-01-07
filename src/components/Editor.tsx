@@ -14,7 +14,7 @@ export const CodeEditor = () => {
     const [code, setCode] = useState(`// Write your code here...`);
     const [output, setOutput] = useState("");
     const [errors, setErrors] = useState<string[]>([]);
-    const [stats, setStats] = useState({ runtime: "0ms", memory: "0MB" });
+    const [stats, setStats] = useState({runtime: "0ms", memory: "0MB"});
     const [settings, setSettings] = useState<EditorSettings>({
         fontSize: 14,
         theme: "vs-dark",
@@ -55,26 +55,28 @@ export const CodeEditor = () => {
                 <ResizablePanel defaultSize={30}>
                     <div className="h-full bg-editor-bg">
                         <Tabs defaultValue="output" className="w-full">
-                            <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-border">
-                                <TabsTrigger 
-                                    value="output" 
-                                    className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
-                                >
-                                    Output
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="errors" 
-                                    className="data-[state=active]:text-editor-error data-[state=active]:border-b-2 data-[state=active]:border-editor-error rounded-none"
-                                >
-                                    Errors
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="stats" 
-                                    className="data-[state=active]:text-editor-accent data-[state=active]:border-b-2 data-[state=active]:border-editor-accent rounded-none"
-                                >
-                                    Stats
-                                </TabsTrigger>
+                            <div className={"w-1/3"}>
+                            <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-border rounded-none">
+                                    <TabsTrigger
+                                        value="output"
+                                        className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
+                                    >
+                                        Output
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="errors"
+                                        className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
+                                    >
+                                        Errors
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="stats"
+                                        className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
+                                    >
+                                        Stats
+                                    </TabsTrigger>
                             </TabsList>
+                            </div>
                             <TabsContent value="output" className="mt-0 p-4">
                                 <div className="font-mono text-sm">
                                     {output || "Program output will appear here..."}
@@ -85,13 +87,15 @@ export const CodeEditor = () => {
                                     {errors.length > 0 ? (
                                         errors.map((error, index) => (
                                             <div key={index} className="flex items-center gap-2 text-editor-error">
-                                                <span className="inline-block w-2 h-2 rounded-full bg-editor-error"></span>
+                                                <span
+                                                    className="inline-block w-2 h-2 rounded-full bg-editor-error"></span>
                                                 <span className="font-mono text-sm">{error}</span>
                                             </div>
                                         ))
                                     ) : (
                                         <div className="flex items-center gap-2 text-editor-success">
-                                            <span className="inline-block w-2 h-2 rounded-full bg-editor-success"></span>
+                                            <span
+                                                className="inline-block w-2 h-2 rounded-full bg-editor-success"></span>
                                             <span className="font-mono text-sm">No errors</span>
                                         </div>
                                     )}

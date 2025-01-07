@@ -7,9 +7,11 @@ export const Layout = ({children}: { children: React.ReactNode }) => {
         <SidebarProvider>
             <div className="min-h-screen flex w-full">
                 <Sidebar/>
-                <div className="flex-1 flex flex-col">
-                    <MenuBar/>
-                    <main className="flex-1 p-4 md:p-6">{children}</main>
+                <div className="md:p-2 md:pl-0 h-full flex-1">
+                    <div className="flex-1 flex flex-col rounded-lg md:border md:border-sidebar-border h-full">
+                        <MenuBar/>
+                        <main className="flex-1">{children}</main>
+                    </div>
                 </div>
             </div>
         </SidebarProvider>

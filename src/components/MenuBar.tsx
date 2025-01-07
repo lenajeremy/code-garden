@@ -49,7 +49,7 @@ export const MenuBar = () => {
         });
 
         // Simulate code execution with a 3-second delay
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         setIsRunning(false);
     };
 
@@ -66,7 +66,7 @@ export const MenuBar = () => {
         <div className="border-b border-border">
             <div className="px-4 py-3 flex items-center justify-between gap-4">
                 {/* Left Section - Logo and Menu */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 md:hidden">
                     <Button 
                         variant="ghost" 
                         size="icon" 
@@ -81,7 +81,7 @@ export const MenuBar = () => {
                 </div>
 
                 {/* Center Section - Language Selector (Desktop Only) */}
-                <div className="hidden md:flex flex-1 justify-center">
+                <div className="hidden md:flex flex-1 md:flex-auto">
                     <Select 
                         defaultValue={language.toLowerCase()} 
                         onValueChange={handleLanguageChange}

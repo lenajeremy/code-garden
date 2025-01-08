@@ -24,12 +24,12 @@ const codeTemplates = {
 };
 
 export const Sidebar = () => {
-    const { currLanguage, setLanguage } = useContext(MainContext);
+    const { language, setLanguage, setCode } = useContext(MainContext);
 
     return (
         <SidebarComponent>
             <SidebarContent>
-                <div className="p-4 border-b border-border">
+                <div className="p-4 border-b border-border md:h-16">
                     <div className="flex items-center gap-3">
                         <Code2 className="w-6 h-6 text-editor-success" />
                         <span className="text-lg font-semibold">Code Garden</span>
@@ -92,7 +92,7 @@ export const Sidebar = () => {
                                     <div className="flex items-center justify-between">
                                         <Label htmlFor="defaultLang">Default Language</Label>
                                         <Select 
-                                            defaultValue={currLanguage.toLowerCase()}
+                                            defaultValue={language.toLowerCase()}
                                             onValueChange={(v) => {
                                                 const lang = languages.find(l => l.toLowerCase() === v.toLowerCase());
                                                 if (lang) setLanguage(lang);
@@ -137,7 +137,7 @@ export const Sidebar = () => {
                                             variant="ghost"
                                             size="sm"
                                             className="w-full justify-start text-sm px-4 hover:bg-background/10"
-                                            onClick={() => console.log(`Load template: ${template.name}`)}
+                                            onClick={() => setCode(template.code)}
                                         >
                                             {template.name}
                                         </Button>

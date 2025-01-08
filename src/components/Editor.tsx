@@ -1,4 +1,5 @@
-import {useContext, useState} from "react";
+
+import {useContext, useEffect, useState} from "react";
 import Editor from "@monaco-editor/react";
 import {ResizableHandle, ResizablePanel, ResizablePanelGroup} from "@/components/ui/resizable";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
@@ -11,16 +12,17 @@ interface EditorSettings {
 }
 
 export const CodeEditor = () => {
-    const [code, setCode] = useState(`// Write your code here...`);
-    const [output, setOutput] = useState("");
-    const [errors, setErrors] = useState<string[]>([]);
-    const [stats, setStats] = useState({runtime: "0ms", memory: "0MB"});
+    type ResultTabs = "output" | "errors" | "stats"
+    const { code, output, error, stats, setCode } = useContext(MainContext)
+    const [currTab, setCurrTab] = useState<ResultTabs>("output")
+    const errors = error.split("\n")
+
     const [settings, setSettings] = useState<EditorSettings>({
         fontSize: 14,
         theme: "vs-dark",
         showLineNumbers: true,
     });
-    const {currLanguage: language} = useContext(MainContext);
+    const {language} = useContext(MainContext);
 
     const handleEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
@@ -28,8 +30,16 @@ export const CodeEditor = () => {
         }
     };
 
+    useEffect(() => {
+        if (error) {
+            setCurrTab("errors")
+        } else if (output) {
+            setCurrTab("output")
+        }
+    }, [output, error])
+
     return (
-        <div className="h-[calc(100vh-10rem)] pt-4">
+        <div className="h-[calc(100vh-82px)] pt-4">
             <ResizablePanelGroup direction="vertical" className="h-full">
                 <ResizablePanel defaultSize={70}>
                     <div className="h-full">
@@ -53,23 +63,26 @@ export const CodeEditor = () => {
                 </ResizablePanel>
                 <ResizableHandle withHandle/>
                 <ResizablePanel defaultSize={30}>
-                    <div className="h-full bg-editor-bg">
-                        <Tabs defaultValue="output" className="w-full">
-                            <div className={"w-1/3"}>
+                    <div className="h-full bg-editor-bg relative overflow-y-scroll">
+                        <Tabs value={currTab} className="w-full">
+                            <div className={"w-full sticky top-0 bg-background"}>
                             <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-border rounded-none">
                                     <TabsTrigger
+                                        onClick={() => setCurrTab("output")}
                                         value="output"
                                         className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
                                     >
                                         Output
                                     </TabsTrigger>
                                     <TabsTrigger
+                                        onClick={() => setCurrTab("errors")}
                                         value="errors"
                                         className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
                                     >
                                         Errors
                                     </TabsTrigger>
                                     <TabsTrigger
+                                        onClick={() => setCurrTab("stats")}
                                         value="stats"
                                         className="data-[state=active]:text-editor-success data-[state=active]:border-b-2 data-[state=active]:border-editor-success rounded-none"
                                     >
@@ -78,7 +91,7 @@ export const CodeEditor = () => {
                             </TabsList>
                             </div>
                             <TabsContent value="output" className="mt-0 p-4">
-                                <div className="font-mono text-sm">
+                                <div style={{ whiteSpace: 'pre-line' }} className="font-mono text-sm">
                                     {output || "Program output will appear here..."}
                                 </div>
                             </TabsContent>

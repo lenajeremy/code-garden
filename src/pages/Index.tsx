@@ -14,15 +14,21 @@ const Index = () => {
 
 const IndexWithProvider = () => {
     const [lang, setLang] = React.useState(DefaultLanguage);
-    const [code, setCode] = React.useState(`// Write your code here...`);
+    const [code, setCode] = React.useState(`# Write your code here...`);
     const [output, setOutput] = React.useState("");
+    const [error, setError] = React.useState("");
+    const [stats, setStats] = React.useState({runtime: "10ms", memory: "0MB"})
 
     return (
         <MainContext.Provider value={{
-            currLanguage: lang,
+            language: lang,
             setLanguage: setLang,
             code, setCode,
-            output, setOutput
+            output, setOutput,
+            error,
+            setError,
+            stats,
+            setStats
         }}>
             <Index/>
         </MainContext.Provider>

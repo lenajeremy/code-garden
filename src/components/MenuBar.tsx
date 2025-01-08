@@ -1,8 +1,8 @@
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
-import {Loader2, Menu, Play, Share2, Settings2} from "lucide-react";
-import {useToast} from "@/hooks/use-toast";
-import {useState, useContext} from "react";
+import {Loader2, Menu, Play, Settings2, Share2} from "lucide-react";
+import React, {useContext, useEffect, useState} from "react";
+import {toast} from "sonner";
 import {
     Dialog,
     DialogContent,
@@ -14,15 +14,10 @@ import {
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import MainContext from "@/lib/main-context";
-import {Language, languages} from "@/lib/constant";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import {languages} from "@/lib/constant";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu";
 import {useSidebar} from "@/components/ui/sidebar";
-import { ShareModal } from "./ShareModal";
+import {ShareModal} from "./ShareModal";
 
 interface ExecutionSettings {
     timeout: number;
@@ -30,9 +25,8 @@ interface ExecutionSettings {
 }
 
 export const MenuBar = () => {
-    const {toast} = useToast();
     const [isRunning, setIsRunning] = useState(false);
-    const {currLanguage: language, setLanguage} = useContext(MainContext);
+    const {language, setLanguage, code, setOutput, setError} = useContext(MainContext);
     const {toggleSidebar} = useSidebar();
     const [settings, setSettings] = useState<ExecutionSettings>({
         timeout: 5000,
@@ -40,17 +34,51 @@ export const MenuBar = () => {
     });
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
+    useEffect(() => {
+        const handler: React.KeyboardEventHandler<HTMLElement> = async e => {
+            if ((e.ctrlKey || e.metaKey) && e.key == "Enter") {
+                e.preventDefault()
+                await handleRun()
+            }
+        }
+        document.addEventListener("keydown", handler, true)
+        return () => document.removeEventListener("keydown", handler, true)
+    })
+
     const handleRun = async () => {
         setIsRunning(true);
-        console.log("Running code with settings:", settings);
-        toast({
-            title: "Executing code...",
-            description: "Your code is being compiled and executed.",
-        });
+        let resolveFunc: (r: unknown) => void
+        let rejectFunc: (r: unknown) => void
 
-        // Simulate code execution with a 3-second delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsRunning(false);
+        const myPromise = new Promise((res, rej) => {
+            resolveFunc = res
+            rejectFunc = rej
+        })
+
+        toast.promise(myPromise, {
+            loading: "Executing code...",
+            success: "Code run successfully.",
+            error: "Failed to run code",
+        })
+
+        let res: Response
+        try {
+            setError("")
+            setOutput("")
+            res = await fetch('http://localhost:3000/run-unsafe', {
+                method: "POST",
+                body: JSON.stringify({code, language: language.toLowerCase()})
+            })
+            const data = await res.json()
+            resolveFunc(res)
+
+            setError(data.error)
+            setOutput(data.output)
+        } catch (err) {
+            rejectFunc(err)
+        } finally {
+            setIsRunning(false);
+        }
     };
 
     const handleLanguageChange = (value: string) => {
@@ -63,17 +91,17 @@ export const MenuBar = () => {
     };
 
     return (
-        <div className="border-b border-border">
+        <div className="border-b border-border md:h-16">
             <div className="px-4 py-3 flex items-center justify-between gap-4">
                 {/* Left Section - Logo and Menu */}
                 <div className="flex items-center gap-3 md:hidden">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         className="md:hidden"
                         onClick={toggleSidebar}
                     >
-                        <Menu className="h-5 w-5" />
+                        <Menu className="h-5 w-5"/>
                     </Button>
                     <div className="flex items-center">
                         <span className="font-semibold text-lg">Code Garden</span>
@@ -82,8 +110,8 @@ export const MenuBar = () => {
 
                 {/* Center Section - Language Selector (Desktop Only) */}
                 <div className="hidden md:flex flex-1 md:flex-auto">
-                    <Select 
-                        defaultValue={language.toLowerCase()} 
+                    <Select
+                        defaultValue={language.toLowerCase()}
                         onValueChange={handleLanguageChange}
                     >
                         <SelectTrigger className="w-[180px]">
@@ -109,10 +137,10 @@ export const MenuBar = () => {
                         size={window.innerWidth < 768 ? "icon" : "default"}
                     >
                         {isRunning ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-4 w-4 animate-spin"/>
                         ) : (
                             <>
-                                <Play className="h-4 w-4 md:mr-2" />
+                                <Play className="h-4 w-4 md:mr-2"/>
                                 <span className="hidden md:inline">Run</span>
                             </>
                         )}
@@ -123,14 +151,14 @@ export const MenuBar = () => {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" size="icon">
-                                    <Settings2 className="h-4 w-4" />
+                                    <Settings2 className="h-4 w-4"/>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-48">
                                 <Dialog>
                                     <DialogTrigger asChild>
                                         <DropdownMenuItem>
-                                            <Settings2 className="h-4 w-4 mr-2" />
+                                            <Settings2 className="h-4 w-4 mr-2"/>
                                             Editor Settings
                                         </DropdownMenuItem>
                                     </DialogTrigger>
@@ -172,12 +200,12 @@ export const MenuBar = () => {
                                     </DialogContent>
                                 </Dialog>
                                 <DropdownMenuItem onClick={() => setIsShareModalOpen(true)}>
-                                    <Share2 className="h-4 w-4 mr-2" />
+                                    <Share2 className="h-4 w-4 mr-2"/>
                                     Share
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <Select 
-                                        defaultValue={language.toLowerCase()} 
+                                    <Select
+                                        defaultValue={language.toLowerCase()}
                                         onValueChange={handleLanguageChange}
                                     >
                                         <SelectTrigger className="w-full border-0 p-0 h-auto font-normal">
@@ -248,9 +276,9 @@ export const MenuBar = () => {
                     </div>
                 </div>
             </div>
-            <ShareModal 
-                isOpen={isShareModalOpen} 
-                onClose={() => setIsShareModalOpen(false)} 
+            <ShareModal
+                isOpen={isShareModalOpen}
+                onClose={() => setIsShareModalOpen(false)}
             />
         </div>
     );

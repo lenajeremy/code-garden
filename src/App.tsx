@@ -11,6 +11,7 @@ const App = () => (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/:snippet-id" element={<Index />} />
       </Routes>
     </BrowserRouter>
   </QueryClientProvider>

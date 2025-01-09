@@ -35,14 +35,14 @@ export const MenuBar = () => {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
     useEffect(() => {
-        const handler: React.KeyboardEventHandler<HTMLElement> = async e => {
+        const handler = async (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key == "Enter") {
                 e.preventDefault()
                 await handleRun()
             }
         }
-        document.addEventListener("keydown", handler, true)
-        return () => document.removeEventListener("keydown", handler, true)
+        window.addEventListener("keydown", handler, true);
+        return () => window.removeEventListener("keydown", handler, true)
     })
 
     const handleRun = async () => {
@@ -73,7 +73,7 @@ export const MenuBar = () => {
             resolveFunc(res)
 
             setError(data.error)
-            setOutput(data.output)
+            setOutput(data.data)
         } catch (err) {
             rejectFunc(err)
         } finally {
@@ -111,7 +111,7 @@ export const MenuBar = () => {
                 {/* Center Section - Language Selector (Desktop Only) */}
                 <div className="hidden md:flex flex-1 md:flex-auto">
                     <Select
-                        defaultValue={language.toLowerCase()}
+                        value={language.toLowerCase()}
                         onValueChange={handleLanguageChange}
                     >
                         <SelectTrigger className="w-[180px]">

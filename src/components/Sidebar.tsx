@@ -1,4 +1,4 @@
-import { Code2, HelpCircle, Settings, Github, Twitter, Linkedin } from "lucide-react";
+import { Code2, Settings, Github, Twitter, Linkedin, Home, Grid, Database, Lock, Folder, Zap, Server, Lightbulb, TrendingUp, List, FileText, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { languages } from "@/lib/constant";
 import { useContext } from "react";
 import MainContext from "@/lib/main-context";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sidebar as SidebarComponent, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 
 const codeTemplates = {
@@ -21,6 +22,28 @@ const codeTemplates = {
         { name: "Hello World", code: 'print("Hello, World!")' },
         { name: "List Operations", code: 'numbers = [1, 2, 3]\nfor n in numbers:\n    print(n)' },
     ],
+};
+
+// Mock saved snippets data - replace with actual data later
+const savedSnippets = [
+    { id: 1, name: "Home", icon: Home },
+    { id: 2, name: "Table Editor", icon: Grid },
+    { id: 3, name: "Database", icon: Database },
+    { id: 4, name: "Authentication", icon: Lock },
+    { id: 5, name: "Storage", icon: Folder },
+    { id: 6, name: "Edge Functions", icon: Server },
+    { id: 7, name: "Realtime", icon: Zap },
+    { id: 8, name: "Advisors", icon: Lightbulb },
+    { id: 9, name: "Reports", icon: TrendingUp },
+    { id: 10, name: "Logs", icon: List },
+    { id: 11, name: "API Docs", icon: FileText },
+];
+
+// Mock user data - replace with actual auth logic later
+const user = {
+    name: "lenajeremy",
+    image: "/avatar.png",
+    isLoggedIn: true
 };
 
 export const Sidebar = () => {
@@ -36,18 +59,40 @@ export const Sidebar = () => {
                     </div>
                 </div>
 
-                <div className="py-4">
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button variant="ghost" className="w-full justify-start px-4 hover:bg-background/10">
-                                <Settings className="w-4 h-4 mr-3" />
-                                Settings
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[500px]">
-                            <DialogHeader>
-                                <DialogTitle className="text-xl font-semibold">Settings</DialogTitle>
-                            </DialogHeader>
+                <div className="flex flex-col h-[calc(100vh-4rem)] justify-between">
+                    {/* Top Section - Saved Snippets */}
+                    <div className="flex-1 overflow-y-auto py-4">
+                        <SidebarGroup>
+                            <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
+                            <SidebarGroupContent>
+                                <SidebarMenu>
+                                    {savedSnippets.map((snippet) => (
+                                        <SidebarMenuItem key={snippet.id}>
+                                            <SidebarMenuButton className="w-full">
+                                                <snippet.icon className="w-4 h-4 mr-3" />
+                                                {snippet.name}
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    ))}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    </div>
+
+                    {/* Bottom Section - Settings and User */}
+                    <div className="border-t border-border">
+                        <div className="py-4">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="ghost" className="w-full justify-start px-4 hover:bg-background/10">
+                                        <Settings className="w-4 h-4 mr-3" />
+                                        Project Settings
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[500px]">
+                                    <DialogHeader>
+                                        <DialogTitle className="text-xl font-semibold">Settings</DialogTitle>
+                                    </DialogHeader>
                             <div className="space-y-6">
                                 <div>
                                     <h3 className="text-sm font-medium text-muted-foreground mb-4">Editor Settings</h3>
@@ -115,58 +160,29 @@ export const Sidebar = () => {
                             <DialogFooter>
                                 <Button type="submit">Apply Changes</Button>
                             </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                                </DialogContent>
+                            </Dialog>
 
-                    <Separator className="my-4" />
-
-                    <Collapsible>
-                        <CollapsibleTrigger asChild>
                             <Button variant="ghost" className="w-full justify-start px-4 hover:bg-background/10">
-                                <Code2 className="w-4 h-4 mr-3" />
-                                Code Templates
+                                <Terminal className="w-4 h-4 mr-3" />
+                                Commands
                             </Button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="space-y-2 mt-2">
-                            {Object.entries(codeTemplates).map(([language, templates]) => (
-                                <div key={language}>
-                                    <h4 className="text-sm font-medium mb-2 capitalize px-4">{language}</h4>
-                                    {templates.map((template, index) => (
-                                        <Button
-                                            key={index}
-                                            variant="ghost"
-                                            size="sm"
-                                            className="w-full justify-start text-sm px-4 hover:bg-background/10"
-                                            onClick={() => setCode(template.code)}
-                                        >
-                                            {template.name}
-                                        </Button>
-                                    ))}
+
+                            {user.isLoggedIn ? (
+                                <div className="px-4 py-3 mt-2">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar>
+                                            <AvatarImage src={user.image} />
+                                            <AvatarFallback>{user.name[0].toUpperCase()}</AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-sm font-medium">{user.name}</span>
+                                    </div>
                                 </div>
-                            ))}
-                        </CollapsibleContent>
-                    </Collapsible>
-
-                    <Separator className="my-4" />
-
-                    <Button variant="ghost" className="w-full justify-start px-4 hover:bg-background/10">
-                        <HelpCircle className="w-4 h-4 mr-3" />
-                        Help
-                    </Button>
-
-                    <Separator className="my-4" />
-
-                    <div className="px-4">
-                        <div className="flex justify-center space-x-4">
-                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
-                                <Github className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
-                                <Twitter className="w-4 h-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="hover:bg-background/10">
-                                <Linkedin className="w-4 h-4" />
-                            </Button>
+                            ) : (
+                                <Button variant="ghost" className="w-full justify-start px-4 hover:bg-background/10 mt-2">
+                                    Sign in
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </div>

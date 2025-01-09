@@ -54,8 +54,8 @@ export const CodeEditor = () => {
                                 minimap: {enabled: false},
                                 fontSize: settings.fontSize,
                                 lineNumbers: settings.showLineNumbers ? "on" : "off",
-                                roundedSelection: false,
-                                scrollBeyondLastLine: false,
+                                roundedSelection: true,
+                                scrollBeyondLastLine: true,
                                 automaticLayout: true,
                             }}
                         />

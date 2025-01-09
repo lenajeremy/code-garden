@@ -54,7 +54,6 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
 
   const params = useParams();
   const [publicId, setPublicId] = useState(params["snippet-id"]);
-  console.log(window.location.href);
   const snippetUrl = window.location.host + "/" + publicId;
   const navigate = useNavigate();
 

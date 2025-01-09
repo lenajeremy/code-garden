@@ -51,10 +51,12 @@ export const MenuBar = () => {
   useEffect(() => {
     const handler = async (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
+        // e.preventDefault();
         if (e.key == "Enter") {
+          e.preventDefault();
           await handleRun();
         } else if (e.key === "s") {
+          e.preventDefault();
           await save(params["snippet-id"]);
         }
       }

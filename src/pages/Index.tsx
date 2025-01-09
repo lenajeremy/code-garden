@@ -76,7 +76,7 @@ const IndexWithProvider = () => {
 
       try {
         const res = await fetch(`http://localhost:3000/snippet/${snippetId}`, {
-          method: "POST",
+          method: "PUT",
           body: JSON.stringify({
             code,
             language: lang.toLowerCase(),

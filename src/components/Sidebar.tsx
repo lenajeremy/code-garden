@@ -73,9 +73,9 @@ export const Sidebar = () => {
                                     {savedSnippets.map((snippet) => (
                                         <SidebarMenuItem key={snippet.id}>
                                             <SidebarMenuButton className="w-full">
-                                                <Terminal className="w-4 h-4 mr-3" />
-                                                <div className="flex flex-col items-start">
-                                                    <span>{snippet.name}</span>
+                                                <Terminal className="w-4 h-4 mr-3 shrink-0" />
+                                                <div className="flex flex-col items-start min-w-0">
+                                                    <span className="truncate w-full">{snippet.name}</span>
                                                     <span className="text-xs text-muted-foreground">{snippet.language}</span>
                                                 </div>
                                             </SidebarMenuButton>

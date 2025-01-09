@@ -5,7 +5,7 @@ import MainContext from "@/lib/main-context.tsx";
 import { DefaultLanguage } from "@/lib/constant.ts";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { log } from "console";
+
 
 const Index = () => {
   return (

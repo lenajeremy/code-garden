@@ -37,11 +37,22 @@ const ResetPassword = () => {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">Set new password</h1>
           <p className="text-sm text-muted-foreground">
-            Enter your new password below
+            Enter your email and new password below
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              id="email"
+              placeholder="you@example.com"
+              type="email"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Input
               id="password"

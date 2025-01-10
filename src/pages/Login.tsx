@@ -67,8 +67,9 @@ const Login = () => {
               <Button
                 variant="link"
                 className="px-0 font-normal text-xs text-muted-foreground hover:text-primary"
+                asChild
               >
-                Forgot Password?
+                <Link to="/forgot-password">Forgot Password?</Link>
               </Button>
             </div>
             <Button className="w-full bg-primary hover:bg-primary/90">

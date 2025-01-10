@@ -27,7 +27,7 @@ const SignUp = () => {
             variant="outline"
             className="w-full justify-center"
           >
-            Sign up with SSO
+            Sign up with email
           </Button>
 
           <div className="relative">

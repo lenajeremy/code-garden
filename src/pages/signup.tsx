@@ -1,35 +1,26 @@
+import { useRegisterMutation } from "@/api/authApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Github } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-
-
 
 const SignUp = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const { trigger, loading } = useRegisterMutation();
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (isEmail) {
-      fetch("http://localhost:3000/auth/register-with-email", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.status == 200) {
-            toast.success("Mail sent", {
-              description: "Check your mails to log in",
-            });
-          } else {
-            toast.error(data.message, { description: data.error });
-          }
-        })
-        .catch((err) => console.error(err));
+    try {
+      const res = await trigger({ email });
+      toast.success("Mail sent", { description: res.message });
+      console.log(res)
+    } catch (err) {
+      toast.error(err.message, { description: err.error });
     }
   };
 
@@ -97,7 +88,7 @@ const SignUp = () => {
               </div>
             )}
 
-            <Button className="w-full bg-primary hover:bg-primary/90">
+            <Button className="w-full bg-primary hover:bg-primary/90" loading = {loading}>
               Create Account
             </Button>
           </form>
@@ -105,7 +96,7 @@ const SignUp = () => {
           <div className="text-center text-sm">
             Already have an account?{" "}
             <Link
-              to="/login"
+              to="/auth/login"
               className="text-primary hover:text-primary/90 hover:underline"
             >
               Sign In

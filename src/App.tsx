@@ -1,5 +1,4 @@
 import { Toaster } from "@/components/ui/sonner";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/index";
 import Landing from "./pages/landing";
@@ -9,11 +8,10 @@ import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import VerifyEmail from "./pages/verify-email";
 import SignInWithToken from "./pages/signin-with-token";
-
-const queryClient = new QueryClient();
+import { QuokkaProvider } from "quokkajs";
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <QuokkaProvider getState={() => {}}>
     <Toaster richColors={true} position={"bottom-right"} />
     <BrowserRouter>
       <Routes>
@@ -32,14 +30,14 @@ const App = () => (
         <Route
           path="*"
           element={
-            <>
-              <h1>404. Not Found!</h1>
-            </>
+            <div className="h-screen w-screen flex items-center justify-center">
+              <h1 className="text-5xl font-semibold">404. Not Found!</h1>
+            </div>
           }
         />
       </Routes>
     </BrowserRouter>
-  </QueryClientProvider>
+  </QuokkaProvider>
 );
 
 export default App;

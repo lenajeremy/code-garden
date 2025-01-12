@@ -17,7 +17,7 @@ const VerifyEmail = () => {
         .then((data) => data.json())
         .then((data) => {
           if (data.status >= 200 && data.status <= 299) {
-            toast.success("Email Verified Successfully", {
+            toast.success("Email verified successfully", {
               description: "You can now log in",
             });
             navigate("/auth/login");
@@ -35,7 +35,6 @@ const VerifyEmail = () => {
 
   useEffect(() => {
     if (token) {
-      console.log(token);
       verifyToken(token);
     }
   }, [token, verifyToken]);

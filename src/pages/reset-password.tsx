@@ -12,7 +12,7 @@ const ResetPassword = () => {
     e.preventDefault();
     // In a real implementation, this would verify the token and update the password
     toast.success("Password successfully reset!");
-    navigate('/login');
+    navigate('/auth/login');
   };
 
   if (!token) {

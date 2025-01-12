@@ -4,28 +4,28 @@ import { Github } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import * as q from "quokkajs";
+import { useLoginMutation } from "@/api/authApi";
 
 const Login = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const { trigger, loading } = useLoginMutation();
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (isEmail) {
-      fetch("http://localhost:3000/auth/login-with-email", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.status >= 200 && data.status <= 299) {
-            toast.success("Mail sent", {
-              description: "Check your mails to log in",
-            });
-          }
-        })
-        .catch((err) => console.error(err));
+      try {
+        const res = await trigger({ email });
+        toast.success("Mail sent", {
+          description: "Check your email to log in",
+        });
+        console.log(res);
+      } catch (err) {
+        toast.error("Login error", { description: JSON.stringify(err) });
+      }
     }
   };
 
@@ -103,7 +103,7 @@ const Login = () => {
               </div>
             )}
 
-            <Button className="w-full bg-primary hover:bg-primary/90">
+            <Button className="w-full bg-primary hover:bg-primary/90" loading={loading}>
               Sign In
             </Button>
           </form>
@@ -111,7 +111,7 @@ const Login = () => {
           <div className="text-center text-sm">
             Don't have an account?{" "}
             <Link
-              to="/signup"
+              to="/auth/signup"
               className="text-primary hover:text-primary/90 hover:underline"
             >
               Sign Up Now

@@ -39,7 +39,7 @@ const ForgotPassword = () => {
           <div className="text-center text-sm">
             Remember your password?{" "}
             <Link
-              to="/login"
+              to="/auth/login"
               className="text-primary hover:text-primary/90 hover:underline"
             >
               Sign In

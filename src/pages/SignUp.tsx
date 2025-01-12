@@ -4,7 +4,8 @@ import { Github } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import * as q from "quokkajs"
+
+
 
 const SignUp = () => {
   const [isEmail, setIsEmail] = useState(false);
@@ -20,7 +21,6 @@ const SignUp = () => {
       })
         .then((data) => data.json())
         .then((data) => {
-          console.log(data);
           if (data.status == 200) {
             toast.success("Mail sent", {
               description: "Check your mails to log in",

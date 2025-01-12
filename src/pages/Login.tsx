@@ -19,8 +19,7 @@ const Login = () => {
       })
         .then((data) => data.json())
         .then((data) => {
-          console.log(data);
-          if (data.status == 200) {
+          if (data.status >= 200 && data.status <= 299) {
             toast.success("Mail sent", {
               description: "Check your mails to log in",
             });
@@ -48,8 +47,12 @@ const Login = () => {
             Continue with GitHub
           </Button>
 
-          <Button variant="outline" className="w-full justify-center">
-            Continue with email
+          <Button
+            variant="outline"
+            className="w-full justify-center"
+            onClick={() => setIsEmail(!isEmail)}
+          >
+            Continue with {!isEmail ? "email" : "password"}
           </Button>
 
           <div className="relative">
@@ -66,6 +69,8 @@ const Login = () => {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Input
+                value={email}
+                onChange={(e) => setEmail(e.currentTarget.value)}
                 id="email"
                 placeholder="you@example.com"
                 type="email"
@@ -74,27 +79,30 @@ const Login = () => {
                 autoCorrect="off"
               />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Input
-                  id="password"
-                  placeholder="••••••••"
-                  type="password"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                />
-              </div>
+            {!isEmail && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Input
+                    id="password"
+                    placeholder="••••••••"
+                    type="password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                  />
+                </div>
 
-              <div className="flex items-center justify-end">
-                <Button
-                  variant="link"
-                  className="px-0 font-normal text-xs text-muted-foreground hover:text-primary"
-                  asChild
-                >
-                  <Link to="/forgot-password">Forgot Password?</Link>
-                </Button>
+                <div className="flex items-center justify-end">
+                  <Button
+                    variant="link"
+                    className="px-0 font-normal text-xs text-muted-foreground hover:text-primary"
+                    asChild
+                  >
+                    <Link to="/forgot-password">Forgot Password?</Link>
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
+
             <Button className="w-full bg-primary hover:bg-primary/90">
               Sign In
             </Button>

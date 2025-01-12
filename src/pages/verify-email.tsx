@@ -2,55 +2,56 @@ import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect } from "react";
+import { useVerifyEmailMutation } from "@/api/authApi";
 
 const VerifyEmail = () => {
   const p = useParams();
   const token = p["token"];
 
+  const { trigger, loading, error } = useVerifyEmailMutation();
   const navigate = useNavigate();
 
   const verifyToken = useCallback(
-    (token: string) => {
-      fetch("http://localhost:3000/auth/verify-email/" + token, {
-        method: "POST",
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.status >= 200 && data.status <= 299) {
-            toast.success("Email verified successfully", {
-              description: "You can now log in",
-            });
-            navigate("/auth/login");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Failed to verify email", {
-            description: JSON.stringify(err),
-          });
+    async (token: string) => {
+      try {
+        const res = await trigger({ token });
+        toast.success("Email verified successfully", {
+          description: "You can now log in",
         });
+        navigate("/auth/login");
+      } catch (error) {
+        toast.error("Failed to verify email", {
+          description: JSON.stringify(error),
+        });
+      }
     },
-    [navigate]
+    [navigate, trigger]
   );
 
   useEffect(() => {
     if (token) {
       verifyToken(token);
     }
-  }, [token, verifyToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-editor-bg p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Verifying your email
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Verifying your account...
-          </p>
+          {loading ? (
+            <>
+              <h1 className="text-2xl font-semibold tracking-tight">
+                Verifying your email
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Verifying your account...
+              </p>
+              <Loader className="animate-spin" />
+            </>
+          ) : null}
 
-          <Loader className="animate-spin" />
+          {error && <pre>{JSON.stringify(error, null, 3)}</pre>}
         </div>
       </div>
     </div>

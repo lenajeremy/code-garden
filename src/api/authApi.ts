@@ -21,6 +21,14 @@ const authApi = createApi({
                 url: "/register-with-email",
                 method: "POST",
                 body: args,
+            })),
+            signInWithToken: builder.mutation<{token: string}, ApiResponse<string>>(args => ({
+                url: `/sign-in-with-token/${args.token}`,
+                method: "POST",
+            })),
+            verifyEmail: builder.mutation<{token: string}, ApiResponse<string>>(args => ({
+                url: `/verify-email/${args.token}`,
+                method: "POST"
             }))
         }
     },
@@ -30,4 +38,6 @@ const authApi = createApi({
 export const {
     useLoginMutation,
     useRegisterMutation,
+    useSignInWithTokenMutation,
+    useVerifyEmailMutation,
 } = authApi.actions

@@ -38,7 +38,7 @@ import {
 const savedSnippets = [
   { id: 1, name: "Fibonacci Sequence", language: "Python", icon: Terminal },
   { id: 2, name: "Two Sum Solution", language: "JavaScript", icon: Terminal },
-  { id: 3, name: "Binary Search Tree", language: "Java", icon: Terminal },
+  { id: 3, name: "Binary Search Tree", language: "Rust", icon: Terminal },
   { id: 4, name: "Quick Sort Implementation", language: "C++", icon: Terminal },
   {
     id: 5,
@@ -65,6 +65,12 @@ const savedSnippets = [
     id: 11,
     name: "Trie Implementation",
     language: "Swift",
+    icon: Terminal,
+  },
+  {
+    id: 12,
+    name: "0/1 Knapsack",
+    language: "Ruby",
     icon: Terminal,
   },
 ];
@@ -114,7 +120,7 @@ export const Sidebar = () => {
                       <SidebarMenuButton className="w-full">
                         <img
                           src={languageImage(snippet.language as Language)}
-                          className="w-4 h-4 mr-3 shrink-0"
+                          className="w-5 h-5 mr-3 shrink-0"
                         />
                         <div className="flex flex-col items-start min-w-0">
                           <span className="truncate w-full">

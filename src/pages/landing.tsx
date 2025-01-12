@@ -18,12 +18,12 @@ export default function Landing() {
         </p>
         <div className="flex gap-4 justify-center">
           <Button asChild size="lg">
-            <Link to="/signup">
+            <Link to="/auth/signup">
               Start Building <ArrowRight className="ml-2" />
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <Link to="/login">Sign In</Link>
+            <Link to="/auth/login">Sign In</Link>
           </Button>
         </div>
       </section>

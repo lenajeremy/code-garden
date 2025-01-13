@@ -30,10 +30,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-editor-bg p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
             Welcome back
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -60,7 +60,7 @@ const Login = () => {
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-editor-bg px-2 text-muted-foreground">
+              <span className="bg-background px-2 text-muted-foreground">
                 or
               </span>
             </div>
@@ -108,7 +108,7 @@ const Login = () => {
             </Button>
           </form>
 
-          <div className="text-center text-sm">
+          <div className="text-center text-sm text-foreground">
             Don't have an account?{" "}
             <Link
               to="/auth/signup"

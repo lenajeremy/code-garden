@@ -11,10 +11,10 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-editor-bg p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Reset your password</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Reset your password</h1>
           <p className="text-sm text-muted-foreground">
             Enter your email address and we'll send you a link to reset your password
           </p>
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
             Send Reset Link
           </Button>
 
-          <div className="text-center text-sm">
+          <div className="text-center text-sm text-foreground">
             Remember your password?{" "}
             <Link
               to="/auth/login"

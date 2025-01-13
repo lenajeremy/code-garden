@@ -1,8 +1,11 @@
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useSignInWithTokenMutation } from "@/api/authApi";
+import { jwtDecode } from "jwt-decode"
+import MainContext from "@/lib/main-context";
+import { User } from "@/types";
 
 const SignInWithToken = () => {
   const p = useParams();
@@ -11,14 +14,19 @@ const SignInWithToken = () => {
   const navigate = useNavigate();
 
   const { trigger, loading, error } = useSignInWithTokenMutation();
+  const { updateUserDetails } = useContext(MainContext)
 
   const verifyToken = useCallback(
     async (token: string) => {
       try {
         const res = await trigger({ token });
-        console.log(res);
+
+        localStorage.setItem("TOKEN", res.data.token)
+        const payload = jwtDecode(res.data.token) as User
+        updateUserDetails(payload)
+
         toast.success("Signed in successfully", { description: res.message });
-        navigate("/");
+        navigate("/editor");
       } catch (err) {
         console.log(err);
         toast.error("Error signing in", {

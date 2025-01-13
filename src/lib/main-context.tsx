@@ -1,5 +1,6 @@
 import { createContext } from "react";
 import { DefaultLanguage, Language } from "@/lib/constant.ts";
+import { User } from "@/types";
 
 const MainContext = createContext<{
   language: Language;
@@ -15,8 +16,8 @@ const MainContext = createContext<{
     memory: string;
   };
   setStats: (s: { runtime: string; memory: string }) => void;
-  save: (snippetId?: string) => Promise<string>;
-  userDetails?: unknown;
+  userDetails?: User;
+  updateUserDetails: (u: User) => void
 }>({
   language: DefaultLanguage,
   setLanguage: () => {},
@@ -31,7 +32,7 @@ const MainContext = createContext<{
     memory: "",
   },
   setStats: () => {},
-  save: async () => "",
+  updateUserDetails: () => {}
 });
 
 export default MainContext;

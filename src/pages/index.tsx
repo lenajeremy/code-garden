@@ -6,24 +6,16 @@ import { DefaultLanguage } from "@/lib/constant.ts";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-
 const Index = () => {
-  return (
-    <Layout>
-      <CodeEditor />
-    </Layout>
-  );
-};
-
-const IndexWithProvider = () => {
-  const [lang, setLang] = React.useState(DefaultLanguage);
-  const [code, setCode] = React.useState(`# Write your code here...`);
-  const [output, setOutput] = React.useState("");
-  const [error, setError] = React.useState("");
-  const [stats, setStats] = React.useState({ runtime: "10ms", memory: "0MB" });
+  const {
+    code,
+    language: lang,
+    output,
+    setCode,
+    setLanguage: setLang,
+    setOutput,
+  } = React.useContext(MainContext);
   const [loading, setLoading] = React.useState(true);
-
-  const params = useParams();
 
   const _create = React.useCallback(async (): Promise<string> => {
     let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
@@ -111,6 +103,7 @@ const IndexWithProvider = () => {
     [_create, _save]
   );
 
+  const params = useParams();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -147,27 +140,13 @@ const IndexWithProvider = () => {
         }
       }
     })();
-  }, [params, navigate]);
+  }, [params, navigate, setCode, setLang, setOutput]);
 
   return (
-    <MainContext.Provider
-      value={{
-        language: lang,
-        setLanguage: setLang,
-        code,
-        setCode,
-        output,
-        setOutput,
-        error,
-        setError,
-        stats,
-        setStats,
-        save,
-      }}
-    >
-      <Index />
-    </MainContext.Provider>
+    <Layout>
+      <CodeEditor />
+    </Layout>
   );
 };
 
-export default IndexWithProvider;
+export default Index;

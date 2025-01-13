@@ -33,6 +33,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Link } from "react-router-dom";
 
 // Mock saved snippets data with programming examples
 const savedSnippets = [
@@ -88,15 +89,13 @@ function languageImage(language: Language): string {
   return `https://raw.githubusercontent.com/lenajeremy/vscode-icons/53506ffc3fafa5f26a55fa5920a81d0e31b9fb1f/icons/file_type_${language.toLowerCase()}.svg`;
 }
 
-// Mock user data - replace with actual auth logic later
-const user = {
-  name: "lenajeremy",
-  image: "/avatar.png",
-  isLoggedIn: false,
-};
-
 export const Sidebar = () => {
-  const { language, setLanguage, setCode } = useContext(MainContext);
+  const {
+    language,
+    setLanguage,
+    setCode,
+    userDetails: user,
+  } = useContext(MainContext);
 
   return (
     <SidebarComponent>
@@ -294,16 +293,16 @@ export const Sidebar = () => {
                 </DialogContent>
               </Dialog>
 
-              {user.isLoggedIn ? (
+              {user ? (
                 <div className="px-4 py-3 mt-2">
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={user.image} />
+                      <AvatarImage src={user.email} />
                       <AvatarFallback>
-                        {user.name[0].toUpperCase()}
+                        {user.email[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium">{user.name}</span>
+                    <span className="text-sm font-medium">{user.email}</span>
                   </div>
                 </div>
               ) : (
@@ -311,7 +310,7 @@ export const Sidebar = () => {
                   variant="ghost"
                   className="w-full justify-start px-4 hover:bg-background/10 mt-2"
                 >
-                  Sign in
+                  <Link to={"/auth/login"}>Sign in</Link>
                 </Button>
               )}
             </div>

@@ -22,7 +22,7 @@ const authApi = createApi({
                 method: "POST",
                 body: args,
             })),
-            signInWithToken: builder.mutation<{token: string}, ApiResponse<string>>(args => ({
+            signInWithToken: builder.mutation<{token: string}, ApiResponse<{token: string}>>(args => ({
                 url: `/sign-in-with-token/${args.token}`,
                 method: "POST",
             })),

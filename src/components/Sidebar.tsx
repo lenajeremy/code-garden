@@ -168,7 +168,7 @@ export const Sidebar = () => {
                             defaultValue={14}
                           />
                         </div>
-                        <div className="flex items-center justify-between">
+                        {/* <div className="flex items-center justify-between">
                           <Label htmlFor="theme">Theme</Label>
                           <Select defaultValue="vs-dark">
                             <SelectTrigger className="w-[180px]">
@@ -179,7 +179,7 @@ export const Sidebar = () => {
                               <SelectItem value="light">Light</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
 

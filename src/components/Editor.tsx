@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditorContext from "@/lib/editor-context";
+import { useTheme } from "next-themes";
 
 interface EditorSettings {
   fontSize: number;
@@ -20,10 +21,11 @@ export const CodeEditor = () => {
     useContext(EditorContext);
   const [currTab, setCurrTab] = useState<ResultTabs>("output");
   const errors = error.split("\n");
+  const { resolvedTheme } = useTheme()
 
   const [settings, setSettings] = useState<EditorSettings>({
     fontSize: 14,
-    theme: "vs-dark",
+    theme: resolvedTheme == "light" ? "vs-light" : "vs-dark",
     showLineNumbers: true,
   });
 

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 import EditorContext from "@/lib/editor-context";
+import { useTheme } from "next-themes";
 
 // Mock saved snippets data with programming examples
 const savedSnippets = [
@@ -93,6 +94,7 @@ function languageImage(language: Language): string {
 export const Sidebar = () => {
   const { language, setLanguage, setCode } = useContext(EditorContext);
   const { userDetails: user } = useContext(MainContext);
+  const { theme, setTheme } = useTheme();
 
   return (
     <SidebarComponent>
@@ -188,7 +190,13 @@ export const Sidebar = () => {
                       <Separator className="mb-4" />
                       <div className="flex items-center justify-between">
                         <Label htmlFor="darkMode">Dark Mode</Label>
-                        <Switch id="darkMode" />
+                        <Switch
+                          id="darkMode"
+                          checked={theme === "dark"}
+                          onCheckedChange={(checked) =>
+                            setTheme(checked ? "dark" : "light")
+                          }
+                        />
                       </div>
                     </div>
 
@@ -225,68 +233,6 @@ export const Sidebar = () => {
                   <DialogFooter>
                     <Button type="submit">Apply Changes</Button>
                   </DialogFooter>
-                </DialogContent>
-              </Dialog>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start px-4 hover:bg-background/10"
-                  >
-                    <Terminal className="w-4 h-4 mr-3" />
-                    Templates
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[600px] max-h-[70vh] overflow-y-scroll">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold">
-                      Code Templates
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-6">
-                    <Select
-                      defaultValue={language.toLowerCase()}
-                      onValueChange={(v) => {
-                        const lang = languages.find(
-                          (l) => l.toLowerCase() === v.toLowerCase()
-                        );
-                        if (lang) setLanguage(lang);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.keys(codeTemplates).map((lang) => (
-                          <SelectItem key={lang} value={lang}>
-                            {lang.charAt(0).toUpperCase() + lang.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <div className="space-y-4">
-                      {codeTemplates[
-                        language.toLowerCase() as keyof typeof codeTemplates
-                      ]?.map((template, index) => (
-                        <div key={index} className="p-4 border rounded-lg">
-                          <div className="flex justify-between items-center mb-2">
-                            <h3 className="font-medium">{template.name}</h3>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setCode(template.code)}
-                            >
-                              Use Template
-                            </Button>
-                          </div>
-                          <pre className="bg-editor-bg p-2 rounded text-sm overflow-x-auto">
-                            <code>{template.code}</code>
-                          </pre>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </DialogContent>
               </Dialog>
 

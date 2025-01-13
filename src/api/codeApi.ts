@@ -25,9 +25,14 @@ const codeApi = createApi({
             })),
             getSnippet: builder.query<string, ApiResponse<Snippet>>(snippetId => ({
                 url: `/snippet/${snippetId}`
+            })),
+            runUnsafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
+                url: "/run-unsafe",
+                method: "POST",
+                body: args
             }))
         }
     },
 })
 
-export const { useCreateSnippetMutation, useUpdateSnippetMutation, useGetSnippetQuery } = codeApi.actions
+export const { useCreateSnippetMutation, useUpdateSnippetMutation, useGetSnippetQuery, useRunUnsafeMutation } = codeApi.actions

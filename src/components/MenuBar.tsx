@@ -30,6 +30,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
 import { useNavigate, useParams } from "react-router-dom";
 import EditorContext from "@/lib/editor-context";
+import { ApiResponse } from "@/types";
+import { useRunUnsafeMutation } from "@/api/codeApi";
 
 interface ExecutionSettings {
   timeout: number;
@@ -37,7 +39,6 @@ interface ExecutionSettings {
 }
 
 export const MenuBar = () => {
-  const [isRunning, setIsRunning] = useState(false);
   const { language, setLanguage, code, setOutput, setError, save } =
     useContext(EditorContext);
   const { toggleSidebar } = useSidebar();
@@ -68,8 +69,9 @@ export const MenuBar = () => {
     return () => window.removeEventListener("keydown", handler, true);
   });
 
+  const { trigger: runCodeUnsafe, loading: isRunning } = useRunUnsafeMutation();
+
   const handleRun = async () => {
-    setIsRunning(true);
     let resolveFunc: (r: unknown) => void;
     let rejectFunc: (r: unknown) => void;
 
@@ -84,23 +86,17 @@ export const MenuBar = () => {
       error: "Failed to run code",
     });
 
-    let res: Response;
+    let res: ApiResponse<string>;
     try {
       setError("");
       setOutput("");
-      res = await fetch("http://localhost:3000/run-unsafe", {
-        method: "POST",
-        body: JSON.stringify({ code, language: language.toLowerCase() }),
-      });
-      const data = await res.json();
+      res = await runCodeUnsafe({ language: language.toLowerCase(), code });
       resolveFunc(res);
 
-      setError(data.error);
-      setOutput(data.data);
+      setError(res.error);
+      setOutput(res.data);
     } catch (err) {
       rejectFunc(err);
-    } finally {
-      setIsRunning(false);
     }
   };
 

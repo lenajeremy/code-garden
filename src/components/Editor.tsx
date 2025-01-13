@@ -68,7 +68,7 @@ export const CodeEditor = () => {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={30}>
-          <div className="h-full bg-editor-bg relative overflow-y-scroll">
+          <div className="h-full bg-background relative overflow-y-scroll">
             <Tabs value={currTab} className="w-full">
               <div className={"w-full sticky top-0 bg-background"}>
                 <TabsList className="w-full grid grid-cols-3 bg-transparent border-b border-border rounded-none">
@@ -98,7 +98,7 @@ export const CodeEditor = () => {
               <TabsContent value="output" className="mt-0 p-4">
                 <div
                   style={{ whiteSpace: "pre-line" }}
-                  className="font-mono text-sm"
+                  className="font-mono text-sm text-foreground"
                 >
                   {output || "Program output will appear here..."}
                 </div>
@@ -126,11 +126,11 @@ export const CodeEditor = () => {
               <TabsContent value="stats" className="mt-0 p-4">
                 <div className="space-y-3 font-mono text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-editor-text/70">Runtime:</span>
+                    <span className="text-foreground/70">Runtime:</span>
                     <span className="text-editor-accent">{stats.runtime}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-editor-text/70">Memory Usage:</span>
+                    <span className="text-foreground/70">Memory Usage:</span>
                     <span className="text-editor-accent">{stats.memory}</span>
                   </div>
                 </div>

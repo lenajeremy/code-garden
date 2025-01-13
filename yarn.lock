@@ -2373,10 +2373,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-quokkajs@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.npmjs.org/quokkajs/-/quokkajs-1.0.10.tgz"
-  integrity sha512-xagc5KdsV+Sqrs7NfX5EOYZQNF2V8OTSWlNAAAsyxd1h7Mv3qWd7sUjUasWK7NHijbWHVpcdRiBcYt4LALLqkA==
+quokkajs@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.npmjs.org/quokkajs/-/quokkajs-1.0.13.tgz"
+  integrity sha512-iKVOS5DbrMW0HidHeDkhrfdmxtfn1ziKiKu4xT9oci/TyOaaKI7LvdNzbPG5r/YKJbgpGxlN8QAPAEj0s3GNqg==
 
 react-day-picker@^8.10.1:
   version "8.10.1"

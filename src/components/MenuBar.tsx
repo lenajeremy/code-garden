@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import MainContext from "@/lib/main-context";
 import { languages } from "@/lib/constant";
 import {
   DropdownMenu,
@@ -29,7 +28,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import EditorContext from "@/lib/editor-context";
 
 interface ExecutionSettings {
   timeout: number;
@@ -39,7 +39,7 @@ interface ExecutionSettings {
 export const MenuBar = () => {
   const [isRunning, setIsRunning] = useState(false);
   const { language, setLanguage, code, setOutput, setError, save } =
-    useContext(MainContext);
+    useContext(EditorContext);
   const { toggleSidebar } = useSidebar();
   const [settings, setSettings] = useState<ExecutionSettings>({
     timeout: 5000,
@@ -47,17 +47,20 @@ export const MenuBar = () => {
   });
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = async (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        // e.preventDefault();
         if (e.key == "Enter") {
           e.preventDefault();
           await handleRun();
         } else if (e.key === "s") {
           e.preventDefault();
-          await save(params["snippet-id"]);
+          const publicId = await save(params["snippet-id"]);
+          if (publicId !== params["snippet-id"]) {
+            navigate(`./${publicId}`, { replace: true });
+          }
         }
       }
     };

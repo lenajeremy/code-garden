@@ -1,21 +1,27 @@
 import * as React from "react";
 import { Layout } from "@/components/Layout";
 import { CodeEditor } from "@/components/Editor";
-import MainContext from "@/lib/main-context.tsx";
-import { DefaultLanguage } from "@/lib/constant.ts";
+import { DefaultLanguage, Language } from "@/lib/constant.ts";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import EditorContext from "@/lib/editor-context";
+import {
+  useCreateSnippetMutation,
+  useGetSnippetQuery,
+  useUpdateSnippetMutation,
+} from "@/api/codeApi";
 
-const Index = () => {
-  const {
-    code,
-    language: lang,
-    output,
-    setCode,
-    setLanguage: setLang,
-    setOutput,
-  } = React.useContext(MainContext);
+function Index() {
+  const [lang, setLang] = React.useState(DefaultLanguage);
+  const [code, setCode] = React.useState(`# Write your code here...`);
+  const [output, setOutput] = React.useState("");
+  const [error, setError] = React.useState("");
+  const [stats, setStats] = React.useState({ runtime: "10ms", memory: "0MB" });
+
   const [loading, setLoading] = React.useState(true);
+
+  const { trigger: createSnippet } = useCreateSnippetMutation();
+  const { trigger: updateSnippet } = useUpdateSnippetMutation();
 
   const _create = React.useCallback(async (): Promise<string> => {
     let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
@@ -31,26 +37,18 @@ const Index = () => {
     });
 
     try {
-      const res = await fetch("http://localhost:3000/snippet/create", {
-        method: "POST",
-        body: JSON.stringify({
-          code,
-          language: lang.toLowerCase(),
-          output,
-        }),
+      const res = await createSnippet({
+        code,
+        language: lang.toLowerCase(),
+        output,
       });
-      const data = await res.json();
-      if (data.status == 201) {
-        resFunc(data);
-        return data.data.public_id;
-      } else {
-        resFunc(data);
-      }
+      resFunc(res);
+      return res.data.public_id;
     } catch (err) {
       rejFunc(err);
     }
     return "";
-  }, [code, lang, output]);
+  }, [code, lang, output, createSnippet]);
 
   const _save = React.useCallback(
     async (snippetId: string) => {
@@ -67,33 +65,23 @@ const Index = () => {
       });
 
       try {
-        const res = await fetch(`http://localhost:3000/snippet/${snippetId}`, {
-          method: "PUT",
-          body: JSON.stringify({
-            code,
-            language: lang.toLowerCase(),
-            output,
-          }),
+        const res = await updateSnippet({
+          code,
+          language: lang.toLowerCase(),
+          output,
+          id: snippetId,
         });
-
-        const data = await res.json();
-        if (data.status == 200) {
-          resFunc(data);
-          return res;
-        } else {
-          resFunc(data);
-          return res;
-        }
+        resFunc(res);
       } catch (error) {
         rejFunc(error);
       }
     },
-    [code, lang, output]
+    [code, lang, output, updateSnippet]
   );
 
   const save = React.useCallback(
     async (snippetId?: string): Promise<string> => {
-      console.log("savinng");
+      console.log("calling create with", snippetId)
       if (!snippetId) {
         return await _create();
       }
@@ -105,6 +93,7 @@ const Index = () => {
 
   const params = useParams();
   const navigate = useNavigate();
+  const { trigger } = useGetSnippetQuery(params["snippet-id"]);
 
   React.useEffect(() => {
     (async function () {
@@ -112,41 +101,43 @@ const Index = () => {
         setLoading(false);
       } else {
         try {
-          const res = await fetch(
-            `http://localhost:3000/snippet/${params["snippet-id"]}`
+          const data = await trigger(params["snippet-id"]);
+          setCode(data.data.code);
+          setLang(
+            (data.data.language.charAt(0).toUpperCase() +
+              data.data.language.slice(1)) as Language
           );
-          const data = await res.json();
-          if (data.status != 200) {
-            toast.error("Snippet not found.");
-            navigate("/");
-          } else {
-            setCode(data.data.code);
-            console.log(
-              data.data.language.charAt(0).toUpperCase() +
-                data.data.language.slice(1)
-            );
-
-            setLang(
-              data.data.language.charAt(0).toUpperCase() +
-                data.data.language.slice(1)
-            );
-            setOutput(data.data.output);
-          }
-        } catch (err) {
-          toast.error(String(err));
+          setOutput(data.data.output);
+        } catch (error) {
+          toast.error(String(error));
           navigate("/");
         } finally {
           setLoading(false);
         }
       }
     })();
-  }, [params, navigate, setCode, setLang, setOutput]);
+  }, [params, navigate, setCode, setLang, setOutput, trigger]);
 
   return (
-    <Layout>
-      <CodeEditor />
-    </Layout>
+    <EditorContext.Provider
+      value={{
+        language: lang,
+        setLanguage: setLang,
+        code,
+        setCode,
+        output,
+        setOutput,
+        error,
+        setError,
+        stats,
+        setStats,
+        save,
+      }}
+    >
+      <Layout>
+        <CodeEditor />
+      </Layout>
+    </EditorContext.Provider>
   );
-};
-
+}
 export default Index;

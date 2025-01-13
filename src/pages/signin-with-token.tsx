@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
 import { useSignInWithTokenMutation } from "@/api/authApi";
-import { jwtDecode } from "jwt-decode"
+import { jwtDecode } from "jwt-decode";
 import MainContext from "@/lib/main-context";
 import { User } from "@/types";
 
@@ -14,32 +14,41 @@ const SignInWithToken = () => {
   const navigate = useNavigate();
 
   const { trigger, loading, error } = useSignInWithTokenMutation();
-  const { updateUserDetails } = useContext(MainContext)
+  const { updateUserDetails } = useContext(MainContext);
 
-  const verifyToken = useCallback(
+  const signInWithToken = useCallback(
     async (token: string) => {
       try {
+        // fetch jwt token
         const res = await trigger({ token });
 
-        localStorage.setItem("TOKEN", res.data.token)
-        const payload = jwtDecode(res.data.token) as User
-        updateUserDetails(payload)
+        // store token
+        localStorage.setItem("TOKEN", res.data.token);
 
+        // decode token
+        const payload = jwtDecode(res.data.token) satisfies { user: User };
+
+        // update user context
+        updateUserDetails(payload.user);
+
+        // show toast message
         toast.success("Signed in successfully", { description: res.message });
+
+        // navigate
         navigate("/editor");
       } catch (err) {
         console.log(err);
-        toast.error("Error signing in", {
-          description: JSON.stringify(err),
+        toast.error(err.message, {
+          description: err.error,
         });
       }
     },
-    [trigger, navigate]
+    [trigger, updateUserDetails, navigate]
   );
 
   useEffect(() => {
     if (token) {
-      verifyToken(token);
+      signInWithToken(token);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -50,17 +59,18 @@ const SignInWithToken = () => {
         {loading && (
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Verifying your email
+              Signing you in
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Verifying your account...
-            </p>
+            <p className="text-sm text-muted-foreground">Please wait...</p>
 
             <Loader className="animate-spin" />
           </div>
         )}
 
-        {error && <pre>{JSON.stringify(error, null, 3)}</pre>}
+        {error && (
+          <pre>{JSON.stringify({ error, name: "jeremiah" }, null, 3)}</pre>
+        )}
+        {<pre>{JSON.stringify({ error, loading })}</pre>}
       </div>
     </div>
   );

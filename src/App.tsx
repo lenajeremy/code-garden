@@ -13,14 +13,8 @@ import { useEffect, useState } from "react";
 import MainContext from "./lib/main-context";
 import { jwtDecode } from "jwt-decode";
 import { User } from "./types";
-import { DefaultLanguage } from "./lib/constant";
 
 const App = () => {
-  const [lang, setLang] = useState(DefaultLanguage);
-  const [code, setCode] = useState(`# Write your code here...`);
-  const [output, setOutput] = useState("");
-  const [error, setError] = useState("");
-  const [stats, setStats] = useState({ runtime: "10ms", memory: "0MB" });
   const [userDetails, setUserDetails] = useState<User | null>(null);
 
   useEffect(() => {
@@ -38,16 +32,6 @@ const App = () => {
   return (
     <MainContext.Provider
       value={{
-        language: lang,
-        setLanguage: setLang,
-        code,
-        setCode,
-        output,
-        setOutput,
-        error,
-        setError,
-        stats,
-        setStats,
         userDetails,
         updateUserDetails: setUserDetails,
       }}

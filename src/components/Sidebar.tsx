@@ -34,6 +34,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
+import EditorContext from "@/lib/editor-context";
 
 // Mock saved snippets data with programming examples
 const savedSnippets = [
@@ -90,12 +91,8 @@ function languageImage(language: Language): string {
 }
 
 export const Sidebar = () => {
-  const {
-    language,
-    setLanguage,
-    setCode,
-    userDetails: user,
-  } = useContext(MainContext);
+  const { language, setLanguage, setCode } = useContext(EditorContext);
+  const { userDetails: user } = useContext(MainContext);
 
   return (
     <SidebarComponent>

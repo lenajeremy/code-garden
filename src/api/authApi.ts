@@ -1,11 +1,5 @@
 import { createApi } from "quokkajs";
-
-type ApiResponse<T> = {
-    data: T,
-    error: string,
-    status: number,
-    message: string
-}
+import { ApiResponse } from "@/types";
 
 const authApi = createApi({
     baseUrl: "http://localhost:3000/auth",

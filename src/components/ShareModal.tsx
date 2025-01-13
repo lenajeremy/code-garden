@@ -29,7 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useNavigate, useParams } from "react-router-dom";
-import MainContext from "@/lib/main-context";
+import EditorContext from "@/lib/editor-context";
 
 const formSchema = z.object({
   email: z.string(),
@@ -41,7 +41,7 @@ interface ShareModalProps {
 }
 
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
-  const { save } = useContext(MainContext);
+  const { save } = useContext(EditorContext);
   const [isSending, setIsSending] = useState(false);
   const [emails, setEmails] = useState<string[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,7 +68,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
       }
     })();
     return () => {
-      navigate(`/${publicId}`);
+      navigate(`/editor/${publicId}`);
     };
   }, [navigate, save, publicId, isOpen]);
 

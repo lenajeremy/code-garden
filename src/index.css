@@ -6,48 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 168 53% 55%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 168 53% 55%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
     --background: 0 0% 12%;
     --foreground: 0 0% 83%;
+
     --card: 0 0% 12%;
     --card-foreground: 0 0% 83%;
+
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 83%;
+
     --primary: 168 53% 55%;
     --primary-foreground: 0 0% 100%;
+
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 83%;
+
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
+
     --accent: 0 0% 14.9%;
     --accent-foreground: 0 0% 83%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 168 53% 55%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -56,7 +43,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-editor-bg text-editor-text font-sans;
   }
   pre, code {
     @apply font-mono;
@@ -64,11 +51,11 @@
 }
 
 .editor-container {
-  @apply h-[calc(100vh-4rem)] bg-background text-foreground;
+  @apply h-[calc(100vh-4rem)] bg-editor-bg text-editor-text;
 }
 
 .output-panel {
-  @apply bg-background border-t border-border p-6 font-mono;
+  @apply bg-editor-bg border-t border-border p-6 font-mono;
   height: 30vh;
 }
 

@@ -97,6 +97,10 @@ export const MenuBar = () => {
       setOutput(res.data);
     } catch (err) {
       rejectFunc(err);
+      if (err.status) {
+        setError(err.error)
+        setOutput(err.data)
+      }
     }
   };
 

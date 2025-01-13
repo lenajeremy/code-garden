@@ -97,7 +97,7 @@ const Login = () => {
                     className="px-0 font-normal text-xs text-muted-foreground hover:text-primary"
                     asChild
                   >
-                    <Link to="/forgot-password">Forgot Password?</Link>
+                    <Link to="/auth/forgot-password">Forgot Password?</Link>
                   </Button>
                 </div>
               </div>

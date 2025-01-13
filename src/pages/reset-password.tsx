@@ -24,7 +24,7 @@ const ResetPassword = () => {
             Please request a new password reset link
           </p>
           <Button asChild>
-            <Link to="/forgot-password">Request New Link</Link>
+            <Link to="/auth/forgot-password">Request New Link</Link>
           </Button>
         </div>
       </div>

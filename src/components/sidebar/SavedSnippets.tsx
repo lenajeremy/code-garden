@@ -1,4 +1,4 @@
-import { Terminal } from "lucide-react";
+import { Terminal, Plus } from "lucide-react";
 import { Language } from "@/lib/constant";
 import {
   SidebarGroup,
@@ -8,6 +8,15 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "sonner";
 
 // Mock saved snippets data with programming examples
 const savedSnippets = [
@@ -39,12 +48,52 @@ function languageImage(language: Language): string {
 }
 
 export const SavedSnippets = () => {
+  const [snippets, setSnippets] = useState(savedSnippets);
+  const [newSnippetName, setNewSnippetName] = useState("");
+
+  const handleCreateSnippet = () => {
+    if (!newSnippetName.trim()) {
+      toast.error("Please enter a name for your snippet");
+      return;
+    }
+
+    const newSnippet = {
+      id: snippets.length + 1,
+      name: newSnippetName,
+      language: "JavaScript" as Language,
+      icon: Terminal,
+    };
+
+    setSnippets([...snippets, newSnippet]);
+    setNewSnippetName("");
+    toast.success("Snippet created successfully!");
+  };
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
+      <div className="flex items-center justify-between px-2">
+        <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <Button variant="ghost" size="icon" className="h-7 w-7">
+              <Plus className="h-4 w-4" />
+            </Button>
+          </ContextMenuTrigger>
+          <ContextMenuContent className="w-64 p-2">
+            <div className="flex flex-col gap-2">
+              <Input
+                placeholder="Enter snippet name"
+                value={newSnippetName}
+                onChange={(e) => setNewSnippetName(e.target.value)}
+              />
+              <Button onClick={handleCreateSnippet}>Create Snippet</Button>
+            </div>
+          </ContextMenuContent>
+        </ContextMenu>
+      </div>
       <SidebarGroupContent>
         <SidebarMenu>
-          {savedSnippets.map((snippet) => (
+          {snippets.map((snippet) => (
             <SidebarMenuItem key={snippet.id}>
               <SidebarMenuButton className="w-full">
                 <img

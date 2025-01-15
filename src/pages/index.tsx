@@ -41,6 +41,7 @@ function Index() {
         code,
         language: lang.toLowerCase(),
         output,
+        name: snippetName || "Untitled Snippet",
       });
       resFunc(res);
       return res.data.public_id;
@@ -48,7 +49,7 @@ function Index() {
       rejFunc(err);
     }
     return "";
-  }, [code, lang, output, createSnippet]);
+  }, [code, lang, output, createSnippet, snippetName]);
 
   const _save = React.useCallback(
     async (snippetId: string) => {
@@ -70,13 +71,14 @@ function Index() {
           language: lang.toLowerCase(),
           output,
           id: snippetId,
+          name: snippetName || "Untitled Snippet",
         });
         resFunc(res);
       } catch (error) {
         rejFunc(error);
       }
     },
-    [code, lang, output, updateSnippet]
+    [code, lang, output, updateSnippet, snippetName]
   );
 
   const save = React.useCallback(

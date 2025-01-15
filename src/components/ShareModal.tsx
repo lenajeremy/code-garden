@@ -54,7 +54,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
 
   const params = useParams();
   const [publicId, setPublicId] = useState(params["snippet-id"]);
-  const snippetUrl = window.location.host + "/" + publicId;
+  const snippetUrl = window.location.host + "/editor/" + publicId;
   const navigate = useNavigate();
 
   useEffect(() => {

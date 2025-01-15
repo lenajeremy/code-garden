@@ -31,7 +31,7 @@ import { ShareModal } from "./ShareModal";
 import { useNavigate, useParams } from "react-router-dom";
 import EditorContext from "@/lib/editor-context";
 import { ApiResponse } from "@/types";
-import { useRunUnsafeMutation } from "@/api/codeApi";
+import { useRunSafeMutation } from "@/api/codeApi";
 
 interface ExecutionSettings {
   timeout: number;
@@ -69,7 +69,7 @@ export const MenuBar = () => {
     return () => window.removeEventListener("keydown", handler, true);
   });
 
-  const { trigger: runCodeUnsafe, loading: isRunning } = useRunUnsafeMutation();
+  const { trigger: runCodeUnsafe, loading: isRunning } = useRunSafeMutation();
 
   const handleRun = async () => {
     let resolveFunc: (r: unknown) => void;

@@ -21,13 +21,13 @@ export const CodeEditor = () => {
     useContext(EditorContext);
   const [currTab, setCurrTab] = useState<ResultTabs>("output");
   const errors = error.split("\n");
-  const { resolvedTheme } = useTheme()
+  const { resolvedTheme } = useTheme();
 
-  const [settings, setSettings] = useState<EditorSettings>({
+  const settings = {
     fontSize: 14,
     theme: resolvedTheme == "light" ? "vs-light" : "vs-dark",
     showLineNumbers: true,
-  });
+  };
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {

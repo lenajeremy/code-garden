@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import MainContext from "@/lib/main-context";
 import { User } from "@/types";
 
+
 const SignInWithToken = () => {
   const p = useParams();
   const token = p["token"];
@@ -19,22 +20,12 @@ const SignInWithToken = () => {
   const signInWithToken = useCallback(
     async (token: string) => {
       try {
-        // fetch jwt token
         const res = await trigger({ token });
-
-        // store token
         localStorage.setItem("TOKEN", res.data.token);
-
-        // decode token
         const payload = jwtDecode(res.data.token) satisfies { user: User };
-
-        // update user context
         updateUserDetails(payload.user);
-
-        // show toast message
         toast.success("Signed in successfully", { description: res.message });
 
-        // navigate
         navigate("/editor");
       } catch (err) {
         console.log(err);

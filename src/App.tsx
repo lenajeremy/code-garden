@@ -14,6 +14,7 @@ import MainContext from "./lib/main-context";
 import { jwtDecode } from "jwt-decode";
 import { User } from "./types";
 import { ThemeProvider } from "next-themes";
+import ProtectedRoute from "./components/protected-route";
 
 const App = () => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
@@ -39,13 +40,33 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/editor" element={<Index />} />
-              <Route path="/editor/:snippet-id" element={<Index />} />
+              <Route
+                path="/editor"
+                element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/editor/:snippet-id"
+                element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/auth/login" element={<Login />} />
               <Route path="/auth/signup" element={<SignUp />} />
-              <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+              <Route
+                path="/auth/forgot-password"
+                element={<ForgotPassword />}
+              />
               <Route path="/auth/reset-password" element={<ResetPassword />} />
-              <Route path="/auth/verify-email/:token" element={<VerifyEmail />} />
+              <Route
+                path="/auth/verify-email/:token"
+                element={<VerifyEmail />}
+              />
               <Route
                 path="/auth/sign-in-with-token/:token"
                 element={<SignInWithToken />}

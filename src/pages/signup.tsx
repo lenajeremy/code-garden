@@ -1,6 +1,10 @@
-import { useRegisterMutation } from "@/api/authApi";
+import {
+  useRegisterWithEmailMutation,
+  useRegisterWithPasswordMutation,
+} from "@/api/authApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ApiResponse } from "@/types";
 import { Github } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,14 +15,23 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { trigger, loading } = useRegisterMutation();
+  const { trigger: registerWithEmail, loading: loadingWithEmail } =
+    useRegisterWithEmailMutation();
+  const { trigger: registerWithPassword, loading: loadingWithPassword } =
+    useRegisterWithPasswordMutation();
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
-      const res = await trigger({ email });
+      let res: ApiResponse<string>;
+      if (isEmail) {
+        res = await registerWithEmail({ email });
+      } else {
+        res = await registerWithPassword({ email, password });
+      }
+
       toast.success("Mail sent", { description: res.message });
-      console.log(res)
+      console.log(res);
     } catch (err) {
       toast.error(err.message, { description: err.error });
     }
@@ -88,7 +101,10 @@ const SignUp = () => {
               </div>
             )}
 
-            <Button className="w-full bg-primary hover:bg-primary/90" loading = {loading}>
+            <Button
+              className="w-full bg-primary hover:bg-primary/90"
+              loading={loadingWithEmail || loadingWithPassword}
+            >
               Create Account
             </Button>
           </form>

@@ -18,7 +18,7 @@ export default function Landing() {
         </p>
         <div className="flex gap-4 justify-center">
           <Button asChild size="lg">
-            <Link to="/auth/signup">
+            <Link to="/editor">
               Start Building <ArrowRight className="ml-2" />
             </Link>
           </Button>

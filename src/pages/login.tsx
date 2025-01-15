@@ -1,31 +1,50 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Github } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import * as q from "quokkajs";
-import { useLoginMutation } from "@/api/authApi";
+import {
+  useLoginWithEmailMutation,
+  useLoginWithPasswordMutation,
+} from "@/api/authApi";
+import { User } from "@/types";
+import { jwtDecode } from "jwt-decode";
+import MainContext from "@/lib/main-context";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isEmail, setIsEmail] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { updateUserDetails } = useContext(MainContext);
+  const navigate = useNavigate();
 
-  const { trigger, loading } = useLoginMutation();
+  const { trigger: loginWithEmail, loading: loadingWithEmail } =
+    useLoginWithEmailMutation();
+  const { trigger: loginWithPassword, loading: loadingWithPassword } =
+    useLoginWithPasswordMutation();
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (isEmail) {
-      try {
-        const res = await trigger({ email });
+
+    try {
+      if (isEmail) {
+        const res = await loginWithEmail({ email });
         toast.success("Mail sent", {
           description: "Check your email to log in",
         });
-        console.log(res);
-      } catch (err) {
-        toast.error("Login error", { description: JSON.stringify(err) });
+      } else {
+        const res = await loginWithPassword({ email, password });
+        localStorage.setItem("TOKEN", res.data.token)
+        const payload = jwtDecode(res.data.token) satisfies { user: User };
+        updateUserDetails(payload.user);
+        toast.success("Signed in successfully", { description: res.message });
+
+        navigate("/editor");
       }
+    } catch (err) {
+      toast.error("Login error", { description: JSON.stringify(err) });
     }
   };
 
@@ -88,6 +107,8 @@ const Login = () => {
                     type="password"
                     autoCapitalize="none"
                     autoCorrect="off"
+                    value = {password}
+                    onChange={e => setPassword(e.currentTarget.value)}
                   />
                 </div>
 
@@ -103,7 +124,10 @@ const Login = () => {
               </div>
             )}
 
-            <Button className="w-full bg-primary hover:bg-primary/90" loading={loading}>
+            <Button
+              className="w-full bg-primary hover:bg-primary/90"
+              loading={loadingWithEmail || loadingWithPassword}
+            >
               Sign In
             </Button>
           </form>

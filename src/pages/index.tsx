@@ -16,8 +16,8 @@ function Index() {
   const [code, setCode] = React.useState(`# Write your code here...`);
   const [output, setOutput] = React.useState("");
   const [error, setError] = React.useState("");
+  const [snippetName, setSnippetName] = React.useState("");
   const [stats, setStats] = React.useState({ runtime: "10ms", memory: "0MB" });
-
   const [loading, setLoading] = React.useState(true);
 
   const { trigger: createSnippet } = useCreateSnippetMutation();
@@ -129,6 +129,8 @@ function Index() {
         setOutput,
         error,
         setError,
+        snippetName,
+        setSnippetName,
         stats,
         setStats,
         save,

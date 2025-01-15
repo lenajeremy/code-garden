@@ -10,8 +10,6 @@ export const EditorContext = createContext<{
   setOutput: (c: string) => void;
   error: string;
   setError: (e: string) => void;
-  snippetName: string;
-  setSnippetName: (name: string) => void;
   stats: {
     runtime: string;
     memory: string;
@@ -27,8 +25,6 @@ export const EditorContext = createContext<{
   setOutput: () => {},
   error: "",
   setError: () => {},
-  snippetName: "",
-  setSnippetName: () => {},
   stats: {
     runtime: "",
     memory: "",

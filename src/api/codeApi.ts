@@ -35,9 +35,6 @@ const codeApi = createApi({
                 url: "/run-safe",
                 method: "POST",
                 body: args
-            })),
-            userSnippets: builder.query<void, ApiResponse<{ total: number, snippets: Snippet[] }>>(() => ({
-                url: "/snippets/mine"
             }))
         }
     },
@@ -48,6 +45,5 @@ export const {
     useUpdateSnippetMutation,
     useGetSnippetQuery,
     useRunUnsafeMutation,
-    useRunSafeMutation,
-    useUserSnippetsQuery,
+    useRunSafeMutation
 } = codeApi.actions

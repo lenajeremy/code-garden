@@ -7,23 +7,23 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuSkeleton,
 } from "@/components/ui/sidebar";
-import { useQuery } from "@tanstack/react-query";
-import { Snippet } from "@/types";
 
-async function fetchSavedSnippets(): Promise<Snippet[]> {
-  // Mock API call with 3 second delay
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  
-  return [
-    { id: 1, name: "Fibonacci Sequence", language: "Python", code: "", output: "" },
-    { id: 2, name: "Two Sum Solution", language: "JavaScript", code: "", output: "" },
-    { id: 3, name: "Binary Search Tree", language: "Rust", code: "", output: "" },
-    { id: 4, name: "Quick Sort Implementation", language: "C++", code: "", output: "" },
-    { id: 5, name: "Dynamic Programming", language: "C#", code: "", output: "" },
-  ];
-}
+// Mock saved snippets data with programming examples
+const savedSnippets = [
+  { id: 1, name: "Fibonacci Sequence", language: "Python", icon: Terminal },
+  { id: 2, name: "Two Sum Solution", language: "JavaScript", icon: Terminal },
+  { id: 3, name: "Binary Search Tree", language: "Rust", icon: Terminal },
+  { id: 4, name: "Quick Sort Implementation", language: "C++", icon: Terminal },
+  { id: 5, name: "Dynamic Programming - Knapsack", language: "C#", icon: Terminal },
+  { id: 6, name: "Graph DFS Traversal", language: "Dart", icon: Terminal },
+  { id: 7, name: "Merge Sort Algorithm", language: "Java", icon: Terminal },
+  { id: 8, name: "Dijkstra's Algorithm", language: "Python", icon: Terminal },
+  { id: 9, name: "Hash Table Implementation", language: "C++", icon: Terminal },
+  { id: 10, name: "Linked List Reversal", language: "JavaScript", icon: Terminal },
+  { id: 11, name: "Trie Implementation", language: "Swift", icon: Terminal },
+  { id: 12, name: "0/1 Knapsack", language: "Ruby", icon: Terminal },
+];
 
 function languageImage(language: Language): string {
   if (language == "JavaScript") {
@@ -39,38 +39,25 @@ function languageImage(language: Language): string {
 }
 
 export const SavedSnippets = () => {
-  const { data: snippets, isLoading } = useQuery({
-    queryKey: ['saved-snippets'],
-    queryFn: fetchSavedSnippets,
-  });
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {isLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <SidebarMenuItem key={`skeleton-${index}`}>
-                <SidebarMenuSkeleton showIcon />
-              </SidebarMenuItem>
-            ))
-          ) : (
-            snippets?.map((snippet) => (
-              <SidebarMenuItem key={snippet.id}>
-                <SidebarMenuButton className="w-full">
-                  <img
-                    src={languageImage(snippet.language as Language)}
-                    className="w-5 h-5 mr-3 shrink-0"
-                    alt={snippet.language}
-                  />
-                  <div className="flex flex-col items-start min-w-0">
-                    <span className="truncate w-full">{snippet.name}</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))
-          )}
+          {savedSnippets.map((snippet) => (
+            <SidebarMenuItem key={snippet.id}>
+              <SidebarMenuButton className="w-full">
+                <img
+                  src={languageImage(snippet.language as Language)}
+                  className="w-5 h-5 mr-3 shrink-0"
+                  alt={snippet.language}
+                />
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="truncate w-full">{snippet.name}</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

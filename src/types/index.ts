@@ -18,9 +18,7 @@ export type ApiResponse<T> = {
 }
 
 export type Snippet = {
-    id?: number | string;
-    name: string;
-    code: string;
-    language: string;
-    output: string;
+    code: string
+    language: string
+    output: string
 }

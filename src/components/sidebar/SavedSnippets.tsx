@@ -164,13 +164,8 @@ export const SavedSnippets = () => {
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <Popover open={renamingSnippetId === snippet.id} onOpenChange={(open) => {
-                            if (!open) {
-                              setRenamingSnippetId(null);
-                              setNewSnippetName("");
-                            }
-                          }}>
+                        <DropdownMenuContent align="end" className="w-48 text-xs">
+                          <Popover>
                             <PopoverTrigger asChild>
                               <DropdownMenuItem
                                 onSelect={(e) => {
@@ -188,7 +183,7 @@ export const SavedSnippets = () => {
                                   type="text"
                                   value={newSnippetName}
                                   onChange={(e) => setNewSnippetName(e.target.value)}
-                                  className="w-full px-2 py-1 border rounded"
+                                  className="w-full px-2 py-1 border rounded text-xs"
                                   placeholder="Enter new name"
                                   autoFocus
                                 />

@@ -28,6 +28,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
 import EditorContext from "@/lib/editor-context";
+import { useParams } from "react-router-dom";
 
 interface ExecutionSettings {
   timeout: number;
@@ -36,6 +37,8 @@ interface ExecutionSettings {
 
 export const MenuBar = () => {
   const { language, setLanguage, loading, run } = useContext(EditorContext);
+  const params = useParams();
+  const snippetId = params["snippet-id"];
 
   const { toggleSidebar } = useSidebar();
   const [settings, setSettings] = useState<ExecutionSettings>({
@@ -52,6 +55,10 @@ export const MenuBar = () => {
       setLanguage(selectedLanguage);
     }
   };
+
+  if (!snippetId) {
+    return <></>;
+  }
 
   return (
     <div className="border-b border-border md:h-16">

@@ -1,35 +1,40 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
-import { Language } from "@/lib/constant";
+import { Language, languages } from "@/lib/constant";
 
 interface CreateSnippetModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (name: string, language: Language) => void;
+  loading: boolean;
 }
 
-const LANGUAGES: Language[] = [
-  "Python",
-  "JavaScript",
-  "TypeScript",
-  "Java",
-  "C++",
-  "Rust",
-  "Go",
-];
-
-export const CreateSnippetModal = ({ isOpen, onClose, onCreate }: CreateSnippetModalProps) => {
+export const CreateSnippetModal = ({
+  isOpen,
+  onClose,
+  onCreate,
+  loading,
+}: CreateSnippetModalProps) => {
   const [name, setName] = useState("");
   const [language, setLanguage] = useState<Language>("Python");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onCreate(name.trim(), language);
-    setName("");
-    setLanguage("Python");
   };
 
   return (
@@ -51,7 +56,7 @@ export const CreateSnippetModal = ({ isOpen, onClose, onCreate }: CreateSnippetM
                 <SelectValue placeholder="Select a language" />
               </SelectTrigger>
               <SelectContent>
-                {LANGUAGES.map((lang) => (
+                {languages.map((lang) => (
                   <SelectItem key={lang} value={lang}>
                     {lang}
                   </SelectItem>
@@ -76,7 +81,9 @@ export const CreateSnippetModal = ({ isOpen, onClose, onCreate }: CreateSnippetM
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Create Snippet</Button>
+            <Button loading={loading} type="submit">
+              Create Snippet
+            </Button>
           </div>
         </form>
       </DialogContent>

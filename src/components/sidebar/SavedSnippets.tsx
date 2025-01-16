@@ -1,5 +1,5 @@
-import { Terminal, Plus, ChevronDown, MoreVertical } from "lucide-react";
-import { DefaultLanguage, Language } from "@/lib/constant";
+import { Plus, ChevronDown, MoreVertical } from "lucide-react";
+import { Language } from "@/lib/constant";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,27 +9,34 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { CreateSnippetModal } from "./CreateSnippetModal";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
-// Mock saved snippets data with programming examples
-const savedSnippetsData = [
-  { id: 1, name: "Fibonacci Sequence", language: "Python" },
-  { id: 2, name: "Two Sum Solution", language: "JavaScript" },
-  { id: 3, name: "Binary Search Tree", language: "Rust" },
-  { id: 4, name: "Quick Sort", language: "C++" },
-  { id: 5, name: "Graph Traversal", language: "Java" },
-];
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "../ui/input";
+import {
+  useCreateSnippetMutation,
+  useGetUserSnippetQuery,
+} from "@/api/codeApi";
+import EditorContext from "@/lib/editor-context";
+import { Snippet } from "@/types";
+import { Link } from "react-router-dom";
 
 function languageImage(language: Language): string {
   if (language == "JavaScript") {
@@ -44,69 +51,81 @@ function languageImage(language: Language): string {
   return `https://raw.githubusercontent.com/lenajeremy/vscode-icons/53506ffc3fafa5f26a55fa5920a81d0e31b9fb1f/icons/file_type_${language.toLowerCase()}.svg`;
 }
 
-// Mock API function
-const fetchSnippets = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(savedSnippetsData);
-    }, 3000);
-  });
-};
-
 export const SavedSnippets = () => {
-  const [snippets, setSnippets] = useState<typeof savedSnippetsData>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [snippets, setSnippets] = useState<Array<Snippet>>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [renamingSnippetId, setRenamingSnippetId] = useState<number | null>(null);
+  const [renamingSnippetId, setRenamingSnippetId] = useState<string | null>(
+    null
+  );
+  const [isPopoverOpen, setIsPopOverOpen] = useState(false);
   const [newSnippetName, setNewSnippetName] = useState("");
+  const { trigger: createSnippet, loading: isCreatingSnippet } =
+    useCreateSnippetMutation();
+  const {
+    data,
+    loading: isLoadingSnippet,
+    error,
+  } = useGetUserSnippetQuery(null, {
+    fetchOnRender: true,
+  });
 
   useEffect(() => {
-    const loadSnippets = async () => {
+    if (error) {
+      toast.error("Failed to load snippets");
+      setSnippets([]);
+      return;
+    }
+
+    if (data && data.data) {
+      setSnippets(data.data.snippets);
+    }
+  }, [data, error]);
+
+  const handleCreateSnippet = useCallback(
+    async (name: string, language: Language) => {
+      language = language.toLowerCase() as Language;
       try {
-        const data = await fetchSnippets();
-        setSnippets(data as typeof savedSnippetsData);
-      } catch (error) {
-        toast.error("Failed to load snippets");
+        const res = await createSnippet({
+          name: name || "Untitled Snippet",
+          language,
+          output: "",
+          code: "",
+        });
+        console.log(res);
+        setSnippets([res.data, ...snippets]);
+        toast.success("Snippet created successfully!");
+      } catch (err) {
+        toast.error("Failed to create snippet", { description: err.message });
+        console.error(err);
       } finally {
-        setIsLoading(false);
+        setShowCreateModal(false);
       }
-    };
+    },
+    [createSnippet, snippets]
+  );
 
-    loadSnippets();
-  }, []);
-
-  const handleCreateSnippet = (name: string, language: Language) => {
-    const newSnippet = {
-      id: snippets.length + 1,
-      name: name || "Untitled Snippet",
-      language,
-    };
-
-    setSnippets([newSnippet, ...snippets]);
-    setShowCreateModal(false);
-    toast.success("Snippet created successfully!");
-  };
-
-  const handleRenameSnippet = (snippetId: number) => {
+  const handleRenameSnippet = (snippetId: string) => {
     if (!newSnippetName.trim()) {
       toast.error("Please enter a valid name");
       return;
     }
 
-    setSnippets(snippets.map(snippet => 
-      snippet.id === snippetId 
-        ? { ...snippet, name: newSnippetName.trim() }
-        : snippet
-    ));
-    
+    setSnippets(
+      snippets.map((snippet) =>
+        snippet.publicId === snippetId
+          ? { ...snippet, name: newSnippetName.trim() }
+          : snippet
+      )
+    );
+
     setRenamingSnippetId(null);
     setNewSnippetName("");
     toast.success("Snippet renamed successfully!");
   };
 
-  const handleDeleteSnippet = (snippetId: number) => {
-    setSnippets(snippets.filter(snippet => snippet.id !== snippetId));
+  const handleDeleteSnippet = (snippetId: string) => {
+    setSnippets(snippets.filter((snippet) => snippet.id !== snippetId));
     toast.success("Snippet deleted successfully!");
   };
 
@@ -115,9 +134,19 @@ export const SavedSnippets = () => {
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <div className="flex items-center justify-between px-2">
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="p-0 hover:bg-transparent">
-              <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
-              <SidebarGroupLabel className="ml-2">Saved Snippets</SidebarGroupLabel>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-0 hover:bg-transparent"
+            >
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${
+                  isOpen ? "" : "-rotate-90"
+                }`}
+              />
+              <SidebarGroupLabel className="ml-2">
+                Saved Snippets
+              </SidebarGroupLabel>
             </Button>
           </CollapsibleTrigger>
           <Button
@@ -133,83 +162,103 @@ export const SavedSnippets = () => {
         <CollapsibleContent>
           <SidebarGroupContent>
             <SidebarMenu>
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, index) => (
-                  <SidebarMenuItem key={`skeleton-${index}`}>
-                    <div className="flex items-center gap-3 px-2 py-1.5 w-full">
-                      <Skeleton className="h-5 w-5 rounded-md" />
-                      <Skeleton className="h-4 flex-1" />
-                    </div>
-                  </SidebarMenuItem>
-                ))
-              ) : (
-                snippets.map((snippet) => (
-                  <SidebarMenuItem key={snippet.id} className="group">
-                    <SidebarMenuButton className="w-full flex justify-between items-center">
-                      <div className="flex items-center min-w-0">
-                        <img
-                          src={languageImage(snippet.language as Language)}
-                          className="w-5 h-5 mr-3 shrink-0"
-                          alt={snippet.language}
-                        />
-                        <span className="truncate">{snippet.name}</span>
+              {isLoadingSnippet
+                ? Array.from({ length: 5 }).map((_, index) => (
+                    <SidebarMenuItem key={`skeleton-${index}`}>
+                      <div className="flex items-center gap-3 px-2 py-1.5 w-full">
+                        <Skeleton className="h-5 w-5 rounded-md" />
+                        <Skeleton className="h-4 flex-1" />
                       </div>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 text-xs">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <DropdownMenuItem
-                                onSelect={(e) => {
-                                  e.preventDefault();
-                                  setRenamingSnippetId(snippet.id);
-                                  setNewSnippetName(snippet.name);
-                                }}
+                    </SidebarMenuItem>
+                  ))
+                : snippets.map((snippet) => (
+                    <SidebarMenuItem key={snippet.id} className="group">
+                      <SidebarMenuButton className="w-full" asChild>
+                        <div className="flex justify-between items-center">
+                          <Link to={`/editor/${snippet.publicId}`}>
+                            <div className="flex items-center min-w-0">
+                              <img
+                                src={languageImage(
+                                  snippet.language as Language
+                                )}
+                                className="w-5 h-5 mr-3 shrink-0"
+                                alt={snippet.language}
+                              />
+                              <span className="truncate">
+                                {snippet.name || "Untitled Snippet"}
+                              </span>
+                            </div>
+                          </Link>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                               >
-                                Rename
-                              </DropdownMenuItem>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-48 p-2">
-                              <div className="space-y-2">
-                                <input
-                                  type="text"
-                                  value={newSnippetName}
-                                  onChange={(e) => setNewSnippetName(e.target.value)}
-                                  className="w-full px-2 py-1 border rounded text-xs"
-                                  placeholder="Enter new name"
-                                  autoFocus
-                                />
-                                <div className="flex justify-end">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleRenameSnippet(snippet.id)}
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="w-48 text-xs"
+                            >
+                              <Popover
+                                modal
+                                open={isPopoverOpen}
+                                onOpenChange={(v) => setIsPopOverOpen(v)}
+                              >
+                                <PopoverTrigger asChild>
+                                  <DropdownMenuItem
+                                    onSelect={(e) => {
+                                      e.preventDefault();
+                                      setRenamingSnippetId(snippet.publicId);
+                                      setNewSnippetName(snippet.name);
+                                      setIsPopOverOpen(true);
+                                    }}
                                   >
                                     Rename
-                                  </Button>
-                                </div>
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onSelect={() => handleDeleteSnippet(snippet.id)}
-                          >
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))
-              )}
+                                  </DropdownMenuItem>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-48 p-2">
+                                  <form
+                                    className="space-y-2"
+                                    onSubmit={(e) => {
+                                      e.preventDefault();
+                                      handleRenameSnippet(snippet.id);
+                                      setIsPopOverOpen(false);
+                                    }}
+                                  >
+                                    <Input
+                                      type="text"
+                                      value={newSnippetName}
+                                      onChange={(e) =>
+                                        setNewSnippetName(e.target.value)
+                                      }
+                                      className="w-full p-2 h-8 text-xs"
+                                      placeholder="Enter new name"
+                                      autoFocus
+                                    />
+                                    <div className="flex justify-end">
+                                      <Button size="sm" className="w-full">
+                                        Rename
+                                      </Button>
+                                    </div>
+                                  </form>
+                                </PopoverContent>
+                              </Popover>
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onSelect={() => handleDeleteSnippet(snippet.id)}
+                              >
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </CollapsibleContent>
@@ -219,6 +268,7 @@ export const SavedSnippets = () => {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onCreate={handleCreateSnippet}
+        loading={isCreatingSnippet}
       />
     </SidebarGroup>
   );

@@ -13,7 +13,7 @@ export const Sidebar = () => {
       <SidebarContent>
         <SidebarHeader />
         <div className="flex flex-col h-[calc(100vh-82px)] justify-between">
-          <div className="flex-1 overflow-y-auto py-4">
+          <div className="flex-1 overflow-y-auto pb-4">
             <SavedSnippets />
             <TemplatesSection />
           </div>

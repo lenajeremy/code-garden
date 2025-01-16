@@ -1,5 +1,5 @@
 import { Terminal, Plus } from "lucide-react";
-import { Language } from "@/lib/constant";
+import { DefaultLanguage, Language } from "@/lib/constant";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,30 +8,26 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 // Mock saved snippets data with programming examples
 const savedSnippets = [
-  { id: 1, name: "Fibonacci Sequence", language: "Python", icon: Terminal },
-  { id: 2, name: "Two Sum Solution", language: "JavaScript", icon: Terminal },
-  { id: 3, name: "Binary Search Tree", language: "Rust", icon: Terminal },
-  { id: 4, name: "Quick Sort Implementation", language: "C++", icon: Terminal },
-  { id: 5, name: "Dynamic Programming - Knapsack", language: "C#", icon: Terminal },
-  { id: 6, name: "Graph DFS Traversal", language: "Dart", icon: Terminal },
-  { id: 7, name: "Merge Sort Algorithm", language: "Java", icon: Terminal },
-  { id: 8, name: "Dijkstra's Algorithm", language: "Python", icon: Terminal },
-  { id: 9, name: "Hash Table Implementation", language: "C++", icon: Terminal },
-  { id: 10, name: "Linked List Reversal", language: "JavaScript", icon: Terminal },
-  { id: 11, name: "Trie Implementation", language: "Swift", icon: Terminal },
-  { id: 12, name: "0/1 Knapsack", language: "Ruby", icon: Terminal },
+  { id: 1, name: "Fibonacci Sequence", language: "Python" },
+  { id: 2, name: "Two Sum Solution", language: "JavaScript" },
+  { id: 3, name: "Binary Search Tree", language: "Rust" },
+  { id: 4, name: "Quick Sort Implementation", language: "C++" },
+  { id: 5, name: "Dynamic Programming - Knapsack", language: "C#" },
+  { id: 6, name: "Graph DFS Traversal", language: "Dart" },
+  { id: 7, name: "Merge Sort Algorithm", language: "Java" },
+  { id: 8, name: "Dijkstra's Algorithm", language: "Python" },
+  { id: 9, name: "Hash Table Implementation", language: "C++" },
+  { id: 10, name: "Linked List Reversal", language: "JavaScript" },
+  { id: 11, name: "Trie Implementation", language: "Swift" },
+  { id: 12, name: "0/1 Knapsack", language: "Ruby" },
 ];
 
 function languageImage(language: Language): string {
@@ -51,7 +47,8 @@ export const SavedSnippets = () => {
   const [snippets, setSnippets] = useState(savedSnippets);
   const [newSnippetName, setNewSnippetName] = useState("");
 
-  const handleCreateSnippet = () => {
+  const handleCreateSnippet: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault()
     if (!newSnippetName.trim()) {
       toast.error("Please enter a name for your snippet");
       return;
@@ -60,11 +57,11 @@ export const SavedSnippets = () => {
     const newSnippet = {
       id: snippets.length + 1,
       name: newSnippetName,
-      language: "JavaScript" as Language,
+      language: DefaultLanguage,
       icon: Terminal,
     };
 
-    setSnippets([...snippets, newSnippet]);
+    setSnippets([newSnippet, ...snippets]);
     setNewSnippetName("");
     toast.success("Snippet created successfully!");
   };
@@ -73,23 +70,23 @@ export const SavedSnippets = () => {
     <SidebarGroup>
       <div className="flex items-center justify-between px-2">
         <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
-        <ContextMenu>
-          <ContextMenuTrigger>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
             <Button variant="ghost" size="icon" className="h-7 w-7">
               <Plus className="h-4 w-4" />
             </Button>
-          </ContextMenuTrigger>
-          <ContextMenuContent className="w-64 p-2">
-            <div className="flex flex-col gap-2">
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-64 p-2">
+            <form className="flex flex-col gap-2" onSubmit={handleCreateSnippet}>
               <Input
                 placeholder="Enter snippet name"
                 value={newSnippetName}
                 onChange={(e) => setNewSnippetName(e.target.value)}
               />
-              <Button onClick={handleCreateSnippet}>Create Snippet</Button>
-            </div>
-          </ContextMenuContent>
-        </ContextMenu>
+              <Button>Create Snippet</Button>
+            </form>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <SidebarGroupContent>
         <SidebarMenu>

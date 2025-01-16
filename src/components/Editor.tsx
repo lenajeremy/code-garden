@@ -97,7 +97,7 @@ export const CodeEditor = () => {
               </div>
               <TabsContent value="output" className="mt-0 p-4">
                 <div
-                  style={{ whiteSpace: "pre-line" }}
+                  style={{ whiteSpace: "break-spaces" }}
                   className="font-mono text-sm text-foreground"
                 >
                   {output || "Program output will appear here..."}

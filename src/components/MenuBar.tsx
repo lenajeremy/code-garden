@@ -6,9 +6,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader2, Menu, Play, Settings2, Share2 } from "lucide-react";
-import React, { useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Loader, Menu, Play, Settings2, Share2 } from "lucide-react";
+import { useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,10 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
-import { useNavigate, useParams } from "react-router-dom";
 import EditorContext from "@/lib/editor-context";
-import { ApiResponse } from "@/types";
-import { useRunSafeMutation } from "@/api/codeApi";
 
 interface ExecutionSettings {
   timeout: number;
@@ -39,66 +35,14 @@ interface ExecutionSettings {
 }
 
 export const MenuBar = () => {
-  const { language, setLanguage, code, setOutput, setError, save } =
-    useContext(EditorContext);
+  const { language, setLanguage, loading, run } = useContext(EditorContext);
+
   const { toggleSidebar } = useSidebar();
   const [settings, setSettings] = useState<ExecutionSettings>({
     timeout: 5000,
     memoryLimit: 128,
   });
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const params = useParams();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const handler = async (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key == "Enter") {
-          e.preventDefault();
-          await handleRun();
-        } else if (e.key === "s") {
-          e.preventDefault();
-          const publicId = await save(params["snippet-id"]);
-          if (publicId !== params["snippet-id"]) {
-            navigate(`./${publicId}`, { replace: true });
-          }
-        }
-      }
-    };
-    window.addEventListener("keydown", handler, true);
-    return () => window.removeEventListener("keydown", handler, true);
-  });
-
-  const { trigger: runCodeUnsafe, loading: isRunning } = useRunSafeMutation();
-
-  const handleRun = async () => {
-    let resolveFunc: (r: unknown) => void;
-    let rejectFunc: (r: unknown) => void;
-
-    const myPromise = new Promise((res, rej) => {
-      resolveFunc = res;
-      rejectFunc = rej;
-    });
-
-    toast.promise(myPromise, {
-      loading: "Executing code...",
-      success: "Code run successfully.",
-      error: "Failed to run code",
-    });
-
-    let res: ApiResponse<string>;
-    try {
-      setError("");
-      setOutput("");
-      res = await runCodeUnsafe({ language: language.toLowerCase(), code });
-      resolveFunc(res);
-
-      setError(res.error);
-      setOutput(res.data);
-    } catch (err) {
-      rejectFunc(err);
-    }
-  };
 
   const handleLanguageChange = (value: string) => {
     const selectedLanguage = languages.find(
@@ -144,19 +88,20 @@ export const MenuBar = () => {
               ))}
             </SelectContent>
           </Select>
+          {loading.isFetchingSnippet && <Loader className="animate-spin" />}
         </div>
 
         {/* Right Section - Actions */}
         <div className="flex items-center gap-2">
           {/* Run Button */}
           <Button
-            onClick={handleRun}
+            onClick={run}
             className="bg-editor-success hover:bg-editor-success/90"
-            disabled={isRunning}
+            disabled={loading.isRunningSnippet}
             size={window.innerWidth < 768 ? "icon" : "default"}
           >
-            {isRunning ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+            {loading.isRunningSnippet ? (
+              <Loader className="h-4 w-4 animate-spin" />
             ) : (
               <>
                 <Play className="h-4 w-4 md:mr-2" />

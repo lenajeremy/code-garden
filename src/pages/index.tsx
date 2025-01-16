@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Layout } from "@/components/Layout";
 import { CodeEditor } from "@/components/Editor";
 import { DefaultLanguage, Language } from "@/lib/constant.ts";
@@ -8,22 +8,48 @@ import EditorContext from "@/lib/editor-context";
 import {
   useCreateSnippetMutation,
   useGetSnippetQuery,
+  useRunSafeMutation,
   useUpdateSnippetMutation,
 } from "@/api/codeApi";
+import { ApiResponse, Snippet } from "@/types";
 
 function Index() {
-  const [lang, setLang] = React.useState(DefaultLanguage);
-  const [code, setCode] = React.useState(`# Write your code here...`);
-  const [output, setOutput] = React.useState("");
-  const [error, setError] = React.useState("");
-  const [stats, setStats] = React.useState({ runtime: "10ms", memory: "0MB" });
+  const params = useParams();
+  const navigate = useNavigate();
 
-  const [loading, setLoading] = React.useState(true);
+  const [lang, setLang] = useState(DefaultLanguage);
+  const [code, setCode] = useState(`# Write your code here...`);
+  const [output, setOutput] = useState("");
+  const [error, setError] = useState("");
+  const [stats, setStats] = useState({ runtime: "10ms", memory: "0MB" });
 
-  const { trigger: createSnippet } = useCreateSnippetMutation();
-  const { trigger: updateSnippet } = useUpdateSnippetMutation();
+  const langRef = useRef(lang);
+  const codeRef = useRef(code);
+  const outputRef = useRef(output);
+  const errorRef = useRef(error);
 
-  const _create = React.useCallback(async (): Promise<string> => {
+  useEffect(() => {
+    langRef.current = lang;
+    codeRef.current = code;
+    outputRef.current = output;
+    errorRef.current = error;
+  }, [lang, output, error, code]);
+
+  const { trigger: createSnippet, loading: isCreatingSnippet } =
+    useCreateSnippetMutation();
+  const { trigger: updateSnippet, loading: isUpdatingSnippet } =
+    useUpdateSnippetMutation();
+  const { trigger: runCodeSafe, loading: isRunningSnippet } =
+    useRunSafeMutation();
+  const {
+    data: snippetRes,
+    error: snippetError,
+    loading: isFetchingSnippet,
+  } = useGetSnippetQuery(params["snippet-id"], {
+    fetchOnRender: !!params["snippet-id"],
+  });
+
+  const create = useCallback(async (): Promise<Snippet> => {
     let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
     const promise = new Promise((_res, _rej) => {
       resFunc = _res;
@@ -38,20 +64,20 @@ function Index() {
 
     try {
       const res = await createSnippet({
-        code,
-        language: lang.toLowerCase(),
-        output,
+        code: codeRef.current,
+        language: langRef.current.toLowerCase(),
+        output: outputRef.current,
+        name: "",
       });
       resFunc(res);
-      return res.data.public_id;
+      return res.data;
     } catch (err) {
       rejFunc(err);
     }
-    return "";
-  }, [code, lang, output, createSnippet]);
+  }, [createSnippet]);
 
-  const _save = React.useCallback(
-    async (snippetId: string) => {
+  const save = useCallback(
+    async (snippetId: string): Promise<void> => {
       let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
       const promise = new Promise((_res, _rej) => {
         resFunc = _res;
@@ -66,57 +92,65 @@ function Index() {
 
       try {
         const res = await updateSnippet({
-          code,
-          language: lang.toLowerCase(),
-          output,
-          id: snippetId,
+          code: codeRef.current,
+          language: langRef.current.toLowerCase(),
+          output: outputRef.current,
+          publicId: snippetId,
+          name: "",
         });
         resFunc(res);
       } catch (error) {
         rejFunc(error);
       }
     },
-    [code, lang, output, updateSnippet]
+    [updateSnippet]
   );
 
-  const save = React.useCallback(
-    async (snippetId?: string): Promise<string> => {
-      console.log("calling create with", snippetId)
-      if (!snippetId) {
-        return await _create();
-      }
-      await _save(snippetId);
-      return snippetId;
-    },
-    [_create, _save]
-  );
+  const run = useCallback(async () => {
+    let resolveFunc: (r: unknown) => void;
+    let rejectFunc: (r: unknown) => void;
 
-  const params = useParams();
-  const navigate = useNavigate();
-  const { trigger } = useGetSnippetQuery(params["snippet-id"]);
+    const myPromise = new Promise((res, rej) => {
+      resolveFunc = res;
+      rejectFunc = rej;
+    });
 
-  React.useEffect(() => {
-    (async function () {
-      if (!params["snippet-id"]) {
-        setLoading(false);
-      } else {
-        try {
-          const data = await trigger(params["snippet-id"]);
-          setCode(data.data.code);
-          setLang(
-            (data.data.language.charAt(0).toUpperCase() +
-              data.data.language.slice(1)) as Language
-          );
-          setOutput(data.data.output);
-        } catch (error) {
-          toast.error(String(error));
-          navigate("/");
-        } finally {
-          setLoading(false);
-        }
-      }
-    })();
-  }, [params, navigate, setCode, setLang, setOutput, trigger]);
+    toast.promise(myPromise, {
+      loading: "Executing code...",
+      success: "Code run successfully.",
+      error: "Failed to run code",
+    });
+
+    let res: ApiResponse<string>;
+    try {
+      setError("");
+      setOutput("");
+      res = await runCodeSafe({
+        language: langRef.current.toLowerCase(),
+        code: codeRef.current,
+      });
+      resolveFunc(res);
+
+      setError(res.error);
+      setOutput(res.data);
+    } catch (err) {
+      rejectFunc(err);
+    }
+  }, [runCodeSafe, setError, setOutput]);
+
+  useEffect(() => {
+    if (snippetError) {
+      toast.error(JSON.stringify(snippetError));
+      navigate("/");
+    } else if (snippetRes && snippetRes.status == 200) {
+      setCode(snippetRes.data.code);
+      setLang(
+        (snippetRes.data.language.charAt(0).toUpperCase() +
+          snippetRes.data.language.slice(1)) as Language
+      );
+      setOutput(snippetRes.data.output);
+    }
+  }, [snippetError, snippetRes, navigate]);
 
   return (
     <EditorContext.Provider
@@ -132,6 +166,14 @@ function Index() {
         stats,
         setStats,
         save,
+        create,
+        run,
+        loading: {
+          isCreatingSnippet,
+          isFetchingSnippet,
+          isRunningSnippet,
+          isUpdatingSnippet,
+        },
       }}
     >
       <Layout>

@@ -13,25 +13,29 @@ const codeApi = createApi({
     },
     endpoints(builder) {
         return {
-            createSnippet: builder.mutation<Snippet, ApiResponse<{ public_id: string }>>(args => ({
+            createSnippet: builder.mutation<Omit<Snippet, "id" | "publicId">, ApiResponse<Snippet>>(args => ({
                 url: "/snippet/create",
                 method: "POST",
                 body: args
             })),
-            updateSnippet: builder.mutation<{ id: string } & Snippet, ApiResponse<string>>(({ id, ...body }) => ({
-                url: `/snippet/${id}`,
+            updateSnippet: builder.mutation<Omit<Snippet, "id">, ApiResponse<Snippet>>(({ publicId, ...body }) => ({
+                url: `/snippet/${publicId}`,
                 method: "PUT",
                 body,
             })),
             getSnippet: builder.query<string, ApiResponse<Snippet>>(snippetId => ({
                 url: `/snippet/${snippetId}`
             })),
+            getUserSnippet: builder.query<void, ApiResponse<{ total: number, snippets: Array<Snippet> }>>(() => ({
+                url: "/snippets/mine",
+                method: "GET"
+            })),
             runUnsafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
                 url: "/run-unsafe",
                 method: "POST",
                 body: args
             })),
-            runSafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
+            runSafe: builder.mutation<{ code: string, language: string }, ApiResponse<string>>(args => ({
                 url: "/run-safe",
                 method: "POST",
                 body: args
@@ -45,5 +49,6 @@ export const {
     useUpdateSnippetMutation,
     useGetSnippetQuery,
     useRunUnsafeMutation,
-    useRunSafeMutation
+    useRunSafeMutation,
+    useGetUserSnippetQuery,
 } = codeApi.actions

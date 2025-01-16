@@ -16,7 +16,7 @@ import {
   Twitter,
   X,
 } from "lucide-react";
-import React, { KeyboardEvent, useContext, useEffect, useState } from "react";
+import { KeyboardEvent, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   Form,
@@ -41,7 +41,6 @@ interface ShareModalProps {
 }
 
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
-  const { save } = useContext(EditorContext);
   const [isSending, setIsSending] = useState(false);
   const [emails, setEmails] = useState<string[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,27 +49,8 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
       email: "",
     },
   });
-  const hasEmails = emails.length > 0;
 
-  const params = useParams();
-  const [publicId, setPublicId] = useState(params["snippet-id"]);
-  const snippetUrl = window.location.host + "/editor/" + publicId;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isOpen) return;
-    (async function () {
-      try {
-        const id = await save(publicId);
-        setPublicId(`${id}`);
-      } catch {
-        alert("error while saving");
-      }
-    })();
-    return () => {
-      navigate(`/editor/${publicId}`);
-    };
-  }, [navigate, save, publicId, isOpen]);
+  const snippetUrl = window.location.href
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(encodeURI(snippetUrl)).then(() => {

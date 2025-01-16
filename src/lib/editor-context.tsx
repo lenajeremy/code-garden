@@ -1,7 +1,8 @@
 import { createContext } from "react";
 import { DefaultLanguage, Language } from "./constant";
+import { Snippet } from "@/types";
 
-export const EditorContext = createContext<{
+const EditorContext = createContext<{
   language: Language;
   setLanguage: (language: Language) => void;
   code: string;
@@ -15,7 +16,15 @@ export const EditorContext = createContext<{
     memory: string;
   };
   setStats: (s: { runtime: string; memory: string }) => void;
-  save: (id?: string) => Promise<string>;
+  save: (snippetId: string) => Promise<void>;
+  create: () => Promise<Snippet>;
+  loading: {
+    isCreatingSnippet: boolean;
+    isFetchingSnippet: boolean;
+    isRunningSnippet: boolean;
+    isUpdatingSnippet: boolean;
+  };
+  run: () => void;
 }>({
   language: DefaultLanguage,
   setLanguage: () => {},
@@ -30,8 +39,23 @@ export const EditorContext = createContext<{
     memory: "",
   },
   setStats: () => {},
-  save: async () => {
-    return "";
+  save: async () => {},
+  create: async () => {
+    return {
+      name: "",
+      id: "",
+      publicId: "",
+      code: "",
+      output: "",
+      language: "Python",
+    };
+  },
+  run: () => {},
+  loading: {
+    isCreatingSnippet: false,
+    isRunningSnippet: false,
+    isFetchingSnippet: false,
+    isUpdatingSnippet: false,
   },
 });
 

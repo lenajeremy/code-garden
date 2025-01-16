@@ -21,4 +21,7 @@ export type Snippet = {
     code: string
     language: string
     output: string
+    id: string
+    name: string
+    publicId: string
 }

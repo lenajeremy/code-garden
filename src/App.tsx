@@ -36,7 +36,7 @@ const App = () => {
         }}
       >
         <QuokkaProvider getState={() => {}}>
-          <Toaster richColors={true} position={"bottom-right"} />
+          <Toaster richColors={true} position={"top-center"} />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Landing />} />

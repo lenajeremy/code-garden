@@ -57,7 +57,7 @@ export const SavedSnippets = () => {
 
     // setSnippets([newSnippet, ...snippets]);
     setNewSnippetName("");
-    toast.success("Snippet created successfully!", { position: "top-center" });
+    toast.success("Snippet created successfully!");
   };
 
   return (

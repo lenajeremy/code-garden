@@ -1,4 +1,4 @@
-import { Terminal, Plus } from "lucide-react";
+import { Terminal, Plus, ChevronDown } from "lucide-react";
 import { DefaultLanguage, Language } from "@/lib/constant";
 import {
   SidebarGroup,
@@ -8,18 +8,21 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { Skeleton } from "../ui/skeleton";
-import { useGetSnippetQuery, useGetUserSnippetQuery } from "@/api/codeApi";
-import { Link } from "react-router-dom";
+import { CreateSnippetModal } from "./CreateSnippetModal";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+
+// Mock saved snippets data with programming examples
+const savedSnippetsData = [
+  { id: 1, name: "Fibonacci Sequence", language: "Python" },
+  { id: 2, name: "Two Sum Solution", language: "JavaScript" },
+  { id: 3, name: "Binary Search Tree", language: "Rust" },
+  { id: 4, name: "Quick Sort", language: "C++" },
+  { id: 5, name: "Graph Traversal", language: "Java" },
+];
 
 function languageImage(language: Language): string {
   if (language == "JavaScript") {
@@ -34,91 +37,106 @@ function languageImage(language: Language): string {
   return `https://raw.githubusercontent.com/lenajeremy/vscode-icons/53506ffc3fafa5f26a55fa5920a81d0e31b9fb1f/icons/file_type_${language.toLowerCase()}.svg`;
 }
 
-export const SavedSnippets = () => {
-  // const [snippets, setSnippets] = useState<typeof savedSnippetsData>([]);
-  const [newSnippetName, setNewSnippetName] = useState("");
-  const { data, loading } = useGetUserSnippetQuery(null, {
-    fetchOnRender: true,
+// Mock API function
+const fetchSnippets = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(savedSnippetsData);
+    }, 3000);
   });
+};
 
-  const handleCreateSnippet: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    if (!newSnippetName.trim()) {
-      toast.error("Please enter a name for your snippet");
-      return;
-    }
+export const SavedSnippets = () => {
+  const [snippets, setSnippets] = useState<typeof savedSnippetsData>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-    // const newSnippet = {
-    //   id: snippets.length + 1,
-    //   name: newSnippetName,
-    //   language: DefaultLanguage,
-    //   icon: Terminal,
-    // };
+  useEffect(() => {
+    const loadSnippets = async () => {
+      try {
+        const data = await fetchSnippets();
+        setSnippets(data as typeof savedSnippetsData);
+      } catch (error) {
+        toast.error("Failed to load snippets");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    // setSnippets([newSnippet, ...snippets]);
-    setNewSnippetName("");
+    loadSnippets();
+  }, []);
+
+  const handleCreateSnippet = (name: string, language: Language) => {
+    const newSnippet = {
+      id: snippets.length + 1,
+      name: name || "Untitled Snippet",
+      language,
+    };
+
+    setSnippets([newSnippet, ...snippets]);
+    setShowCreateModal(false);
     toast.success("Snippet created successfully!");
   };
 
   return (
     <SidebarGroup>
-      <div className="flex items-center justify-between px-2">
-        <SidebarGroupLabel>Saved Snippets</SidebarGroupLabel>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" size="icon" className="h-7 w-7">
-              <Plus className="h-4 w-4" />
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <div className="flex items-center justify-between px-2">
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="p-0 hover:bg-transparent">
+              <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
+              <SidebarGroupLabel className="ml-2">Saved Snippets</SidebarGroupLabel>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-64 p-2">
-            <form
-              className="flex flex-col gap-2"
-              onSubmit={handleCreateSnippet}
-            >
-              <Input
-                placeholder="Enter snippet name"
-                value={newSnippetName}
-                onChange={(e) => setNewSnippetName(e.target.value)}
-              />
-              <Button>Create Snippet</Button>
-            </form>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {loading
-            ? Array.from({ length: 5 }).map((_, index) => (
-                <SidebarMenuItem key={`skeleton-${index}`}>
-                  <div className="flex items-center gap-3 px-2 py-1.5 w-full">
-                    <Skeleton className="h-5 w-5 rounded-md" />
-                    <Skeleton className="h-4 flex-1" />
-                  </div>
-                </SidebarMenuItem>
-              ))
-            : data &&
-              data.data.snippets.map((snippet) => (
-                <SidebarMenuItem key={snippet.id}>
-                  <SidebarMenuButton className="w-full" asChild>
-                    <Link to = {`/editor/${snippet.publicId}`}>
-                      <div className="border border-border rounded-md p-1 mr-3">
-                        <img
-                          src={languageImage(snippet.language as Language)}
-                          className="w-5 h-5 shrink-0"
-                          alt={snippet.language}
-                        />
-                      </div>
+          </CollapsibleTrigger>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={() => setShowCreateModal(true)}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <CollapsibleContent>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <SidebarMenuItem key={`skeleton-${index}`}>
+                    <div className="flex items-center gap-3 px-2 py-1.5 w-full">
+                      <Skeleton className="h-5 w-5 rounded-md" />
+                      <Skeleton className="h-4 flex-1" />
+                    </div>
+                  </SidebarMenuItem>
+                ))
+              ) : (
+                snippets.map((snippet) => (
+                  <SidebarMenuItem key={snippet.id}>
+                    <SidebarMenuButton className="w-full">
+                      <img
+                        src={languageImage(snippet.language as Language)}
+                        className="w-5 h-5 mr-3 shrink-0"
+                        alt={snippet.language}
+                      />
                       <div className="flex flex-col items-start min-w-0">
-                        <span className="truncate w-full capitalize">
-                          {snippet.name || snippet.language}
-                        </span>
+                        <span className="truncate w-full">{snippet.name}</span>
                       </div>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))
+              )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </CollapsibleContent>
+      </Collapsible>
+
+      <CreateSnippetModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreate={handleCreateSnippet}
+      />
     </SidebarGroup>
   );
 };

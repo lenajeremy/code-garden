@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from "react";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
@@ -87,4 +88,10 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;
+export default function ResetPasswordSafe() {
+  return (
+    <Suspense>
+      <ResetPassword />
+    </Suspense>
+  )
+};

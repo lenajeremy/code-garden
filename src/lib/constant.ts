@@ -4,7 +4,7 @@ export const languages = [
 ] as const;
 
 export type Language = typeof languages[number];
-export const DefaultLanguage: Language = localStorage.getItem("USER_DEFAULT_LANGUAGE") as Language ?? "Python"
+export const DefaultLanguage: Language = "Python"
 
 
 export const codeTemplates = {

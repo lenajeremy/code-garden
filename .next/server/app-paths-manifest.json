@@ -1,10 +1,3 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/auth/reset-password/page": "app/auth/reset-password/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
-  "/auth/forgot-password/page": "app/auth/forgot-password/page.js",
-  "/auth/signin-with-token/page": "app/auth/signin-with-token/page.js",
-  "/editor/[snippet-id]/page": "app/editor/[snippet-id]/page.js",
-  "/editor/page": "app/editor/page.js",
-  "/page": "app/page.js"
+  "/auth/login/page": "app/auth/login/page.js"
 }

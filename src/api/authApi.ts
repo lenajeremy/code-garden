@@ -2,7 +2,7 @@ import { createApi } from "quokkajs";
 import { ApiResponse } from "@/types";
 
 const authApi = createApi({
-    baseUrl: "http://localhost:3000/auth",
+    baseUrl: "https://3834-2a02-c206-2241-107-00-1.ngrok-free.app/auth",
     apiName: "authApi",
     endpoints(builder) {
         return {

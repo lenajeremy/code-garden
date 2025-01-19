@@ -1,24 +1,22 @@
-import { ReactNode, useEffect, useState } from "react";
+import MainContext from "@/lib/main-context";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { redirect, useNavigate } from "react-router";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { userDetails } = useContext(MainContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("TOKEN");
-    if (!token) {
+    console.log(userDetails)
+    if (!userDetails) {
       navigate("/auth/login");
     }
     setLoading(false);
-  }, [navigate]);
+  }, [navigate, userDetails]);
 
   if (loading) {
-    return (
-      <div className="h-screen w-screen bg-background">
-        <p>Loading...</p>
-      </div>
-    );
+    return <></>;
   } else {
     return children;
   }

@@ -54,7 +54,7 @@ const SignInWithToken = () => {
             </h1>
             <p className="text-sm text-muted-foreground">Please wait...</p>
 
-            <Loader className="animate-spin" />
+            <Loader className="animate-spin h-4 w-4" />
           </div>
         )}
 

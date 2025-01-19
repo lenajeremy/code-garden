@@ -47,7 +47,7 @@ const VerifyEmail = () => {
               <p className="text-sm text-muted-foreground">
                 Verifying your account...
               </p>
-              <Loader className="animate-spin" />
+              <Loader className="animate-spin w-4 h-4" />
             </>
           ) : null}
 

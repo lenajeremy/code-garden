@@ -15,17 +15,30 @@ import { jwtDecode } from "jwt-decode";
 import { User } from "./types";
 import { ThemeProvider } from "next-themes";
 import ProtectedRoute from "./components/protected-route";
+import { Loader } from "lucide-react";
+
 
 const App = () => {
   const [userDetails, setUserDetails] = useState<User | null>(null);
-
+  const [loading, setLoading] = useState(true)
+ 
   useEffect(() => {
     const token = localStorage.getItem("TOKEN");
     if (token) {
       const payload = jwtDecode(token)["user"] as User;
       setUserDetails(payload);
+      console.log(payload)
     }
+    setLoading(false)
   }, []);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    )
+  }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -42,30 +42,29 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, loading, asChild = false, children, ...props },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
-    if (loading) {
-      return (
-        <div className="relative opacity-70">
-          <Comp
-            className={cn(buttonVariants({ variant, size, className }))}
-            ref={ref}
-          />
-          <div className="absolute w-full h-full flex items-center justify-center top-0 left-0 bottom-0 right-0">
-            <Loader2 className="animate-spin" />
-          </div>
-        </div>
-      );
-    }
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
         {...props}
-      />
+        className={cn(buttonVariants({ variant, size, className }), "relative")}
+        ref={ref}
+      >
+        {loading ? (
+          <div className="absolute w-full h-full flex items-center justify-center top-0 left-0 bottom-0 right-0">
+            <Loader className="h-4 w-4 animate-spin" />
+          </div>
+        ) : (
+          children
+        )}
+      </Comp>
     );
   }
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button };

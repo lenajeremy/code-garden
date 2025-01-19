@@ -95,7 +95,7 @@ export const MenuBar = () => {
               ))}
             </SelectContent>
           </Select>
-          {loading.isFetchingSnippet && <Loader className="animate-spin" />}
+          {loading.isFetchingSnippet && <Loader className="animate-spin w-4 h-4" />}
         </div>
 
         {/* Right Section - Actions */}

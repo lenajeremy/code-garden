@@ -1,4 +1,4 @@
-import { Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,7 +20,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Language, languages } from "@/lib/constant";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import MainContext from "@/lib/main-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
@@ -29,8 +29,13 @@ import { useTheme } from "next-themes";
 
 export const SidebarFooter = () => {
   const { language, setLanguage } = useContext(EditorContext);
-  const { userDetails: user } = useContext(MainContext);
+  const { userDetails: user, updateUserDetails } = useContext(MainContext);
   const { theme, setTheme } = useTheme();
+
+  const logout = function () {
+    localStorage.removeItem("TOKEN")
+    updateUserDetails(undefined)
+  }
 
   return (
     <div className="border-t border-border">
@@ -134,9 +139,17 @@ export const SidebarFooter = () => {
         </Dialog>
 
         {user ? (
-          <div className="px-4 py-3 mt-2">
-            <div className="flex items-center gap-3">
-              <Avatar>
+          <div className="py-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-4"
+              onClick={logout}
+            >
+              <LogOut className="w-4 h-4 mr-3" />
+              Logout
+            </Button>
+            <div className="flex items-center gap-3 px-4 mt-4">
+              <Avatar className="w-7 h-7">
                 <AvatarImage src={user.email} />
                 <AvatarFallback>{user.email[0].toUpperCase()}</AvatarFallback>
               </Avatar>

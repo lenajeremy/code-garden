@@ -3,7 +3,7 @@ import { createApi } from "quokkajs";
 
 const codeApi = createApi({
     apiName: "codeApi",
-    baseUrl: "http://localhost:3000",
+    baseUrl: "https://3834-2a02-c206-2241-107-00-1.ngrok-free.app",
     prepareHeaders(_, headers) {
         const token = localStorage.getItem("TOKEN")
         if (token) {

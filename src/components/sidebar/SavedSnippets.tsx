@@ -94,8 +94,8 @@ export const SavedSnippets = () => {
           setSnippets([res.data, ...snippets]);
           toast.success("Snippet created successfully!");
         }
-      } catch (err: unknown) {
-        toast.error("Failed to create snippet", { description: err.message });
+      } catch (err) {
+        toast.error("Failed to create snippet", { description: (err as {message: string}).message });
         console.error(err);
       } finally {
         setShowCreateModal(false);

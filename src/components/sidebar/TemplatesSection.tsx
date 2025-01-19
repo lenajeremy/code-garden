@@ -1,5 +1,5 @@
 import { LayoutTemplate } from "lucide-react";
-import { Language, codeTemplates } from "@/lib/constant";
+import { codeTemplates } from "@/lib/constant";
 import { useContext } from "react";
 import EditorContext from "@/lib/editor-context";
 import {
@@ -13,7 +13,8 @@ import {
 
 export const TemplatesSection = () => {
   const { language, setCode } = useContext(EditorContext);
-  const templates = codeTemplates[language.toLowerCase() as Lowercase<Language>] || [];
+  type TemplateKeys = keyof typeof codeTemplates
+  const templates = codeTemplates[language.toLowerCase() as TemplateKeys] || [];
 
   return (
     <SidebarGroup>

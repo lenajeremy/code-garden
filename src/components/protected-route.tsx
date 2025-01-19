@@ -1,19 +1,18 @@
 import MainContext from "@/lib/main-context";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { redirect, useNavigate } from "react-router";
+import { useRouter } from 'next/router';
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const { userDetails } = useContext(MainContext);
 
   useEffect(() => {
-    console.log(userDetails)
     if (!userDetails) {
-      navigate("/auth/login");
+      router.push("/auth/login");
     }
     setLoading(false);
-  }, [navigate, userDetails]);
+  }, [router, userDetails]);
 
   if (loading) {
     return <></>;

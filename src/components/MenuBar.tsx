@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Select,
   SelectContent,
@@ -28,7 +30,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
 import EditorContext from "@/lib/editor-context";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 
 interface ExecutionSettings {
   timeout: number;
@@ -95,7 +97,9 @@ export const MenuBar = () => {
               ))}
             </SelectContent>
           </Select>
-          {loading.isFetchingSnippet && <Loader className="animate-spin w-4 h-4" />}
+          {loading.isFetchingSnippet && (
+            <Loader className="animate-spin w-4 h-4" />
+          )}
         </div>
 
         {/* Right Section - Actions */}

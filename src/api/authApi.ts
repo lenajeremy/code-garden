@@ -1,7 +1,7 @@
 import { createApi } from "quokkajs";
 import { ApiResponse } from "@/types";
 
-const authApi = createApi({                     
+const authApi = createApi({
     baseUrl: "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app/auth",
     apiName: "authApi",
     endpoints(builder) {
@@ -9,7 +9,7 @@ const authApi = createApi({
             loginWithEmail: builder.mutation<{ email: string }, ApiResponse<string>>(args => ({
                 url: "/login-with-email",
                 method: "POST",
-                body: args
+                body: { ...args, clientHost: location.origin }
             })),
             loginWithPassword: builder.mutation<{ email: string, password: string }, ApiResponse<{ token: string }>>(args => ({
                 url: "/login-with-password",
@@ -19,12 +19,12 @@ const authApi = createApi({
             registerWithEmail: builder.mutation<{ email: string }, ApiResponse<string>>(args => ({
                 url: "/register-with-email",
                 method: "POST",
-                body: args,
+                body: { ...args, clientHost: location.origin },
             })),
             registerWithPassword: builder.mutation<{ email: string, password: string }, ApiResponse<string>>(args => ({
                 url: "/register-with-password",
                 method: "POST",
-                body: args
+                body: { ...args, clientHost: location.origin },
             })),
             signInWithToken: builder.mutation<{ token: string }, ApiResponse<{ token: string }>>(args => ({
                 url: `/sign-in-with-token/${args.token}`,

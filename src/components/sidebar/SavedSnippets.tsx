@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useContext, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { CreateSnippetModal } from "./CreateSnippetModal";
@@ -34,9 +34,8 @@ import {
   useCreateSnippetMutation,
   useGetUserSnippetQuery,
 } from "@/api/codeApi";
-import EditorContext from "@/lib/editor-context";
 import { Snippet } from "@/types";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 function languageImage(language: Language): string {
   if (language == "JavaScript") {
@@ -55,9 +54,7 @@ export const SavedSnippets = () => {
   const [snippets, setSnippets] = useState<Array<Snippet>>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [renamingSnippetId, setRenamingSnippetId] = useState<string | null>(
-    null
-  );
+  const [, setRenamingSnippetId] = useState<string | null>(null);
   const [isPopoverOpen, setIsPopOverOpen] = useState(false);
   const [newSnippetName, setNewSnippetName] = useState("");
   const { trigger: createSnippet, loading: isCreatingSnippet } =
@@ -66,7 +63,7 @@ export const SavedSnippets = () => {
     data,
     loading: isLoadingSnippet,
     error,
-  } = useGetUserSnippetQuery(null, {
+  } = useGetUserSnippetQuery(undefined, {
     fetchOnRender: true,
   });
 
@@ -93,9 +90,11 @@ export const SavedSnippets = () => {
           code: "",
         });
         console.log(res);
-        setSnippets([res.data, ...snippets]);
-        toast.success("Snippet created successfully!");
-      } catch (err) {
+        if (res) {
+          setSnippets([res.data, ...snippets]);
+          toast.success("Snippet created successfully!");
+        }
+      } catch (err: unknown) {
         toast.error("Failed to create snippet", { description: err.message });
         console.error(err);
       } finally {
@@ -175,7 +174,7 @@ export const SavedSnippets = () => {
                     <SidebarMenuItem key={snippet.id} className="group">
                       <SidebarMenuButton className="w-full" asChild>
                         <div className="flex justify-between items-center">
-                          <Link to={`/editor/${snippet.publicId}`}>
+                          <Link href={`/editor/${snippet.publicId}`}>
                             <div className="flex items-center min-w-0">
                               <img
                                 src={languageImage(

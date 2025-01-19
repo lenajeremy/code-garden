@@ -19,13 +19,14 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Language, languages } from "@/lib/constant";
-import { useCallback, useContext } from "react";
+import { languages } from "@/lib/constant";
+import { useContext } from "react";
 import MainContext from "@/lib/main-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Link } from "react-router-dom";
 import EditorContext from "@/lib/editor-context";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+
 
 export const SidebarFooter = () => {
   const { language, setLanguage } = useContext(EditorContext);
@@ -161,7 +162,7 @@ export const SidebarFooter = () => {
             variant="ghost"
             className="w-full justify-start px-4 hover:bg-background/10 mt-2"
           >
-            <Link to={"/auth/login"}>Sign in</Link>
+            <Link href={"/auth/login"}>Sign in</Link>
           </Button>
         )}
       </div>

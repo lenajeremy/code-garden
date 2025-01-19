@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import {
   ResizableHandle,
@@ -8,11 +8,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditorContext from "@/lib/editor-context";
 import { useTheme } from "next-themes";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 
 export const CodeEditor = () => {
   const params = useParams();
-  const snippetId = params["snippet-id"];
+  const snippetId = params["snippet-id"] as string;
 
   return (
     <div className="h-[calc(100vh-82px)] pt-4">
@@ -36,7 +36,7 @@ function Editor() {
   const { resolvedTheme } = useTheme();
 
   const params = useParams();
-  const snippetId = params["snippet-id"];
+  const snippetId = params["snippet-id"] as string;
 
   const settings = {
     fontSize: 14,

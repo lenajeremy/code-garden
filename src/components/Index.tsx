@@ -1,8 +1,10 @@
+"use client"
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Layout } from "@/components/Layout";
 import { CodeEditor } from "@/components/Editor";
-import { DefaultLanguage, Language } from "@/lib/constant.ts";
-import { useRouter } from 'next/router';
+import { DefaultLanguage, Language } from "@/lib/constant";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import EditorContext from "@/lib/editor-context";
 import {
@@ -11,8 +13,7 @@ import {
   useRunSafeMutation,
   useUpdateSnippetMutation,
 } from "@/api/codeApi";
-import { ApiResponse, Snippet } from "@/types";
-import ProtectedRoute from "@/components/protected-route";
+import { Snippet } from "@/types";
 
 const Index = ({ snippetId }: { snippetId: string }) => {
   const router = useRouter();
@@ -49,8 +50,16 @@ const Index = ({ snippetId }: { snippetId: string }) => {
     fetchOnRender: !!snippetId,
   });
 
-  const create = useCallback(async (): Promise<Snippet> => {
-    let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
+  const create = useCallback(async (): Promise<Snippet | undefined> => {
+    let [resFunc, rejFunc] = [
+      (v: unknown) => {
+        console.log(v);
+      },
+      (_?: unknown) => {
+        console.log(_);
+      },
+    ];
+
     const promise = new Promise((_res, _rej) => {
       resFunc = _res;
       rejFunc = _rej;
@@ -70,7 +79,7 @@ const Index = ({ snippetId }: { snippetId: string }) => {
         name: "",
       });
       resFunc(res);
-      return res.data;
+      return res?.data;
     } catch (err) {
       rejFunc(err);
     }
@@ -78,7 +87,15 @@ const Index = ({ snippetId }: { snippetId: string }) => {
 
   const save = useCallback(
     async (snippetId: string): Promise<void> => {
-      let [resFunc, rejFunc] = [(v: unknown) => {}, (r?: unknown) => {}];
+      let [resFunc, rejFunc] = [
+        (v: unknown) => {
+          console.log(v);
+        },
+        (r?: unknown) => {
+          console.log(r);
+        },
+      ];
+
       const promise = new Promise((_res, _rej) => {
         resFunc = _res;
         rejFunc = _rej;
@@ -107,8 +124,12 @@ const Index = ({ snippetId }: { snippetId: string }) => {
   );
 
   const run = useCallback(async () => {
-    let resolveFunc: (r: unknown) => void;
-    let rejectFunc: (r: unknown) => void;
+    let resolveFunc = (r: unknown) => {
+      console.log(r);
+    };
+    let rejectFunc = (r: unknown) => {
+      console.log(r);
+    };
 
     const myPromise = new Promise((res, rej) => {
       resolveFunc = res;
@@ -121,18 +142,18 @@ const Index = ({ snippetId }: { snippetId: string }) => {
       error: "Failed to run code",
     });
 
-    let res: ApiResponse<string>;
     try {
       setError("");
       setOutput("");
-      res = await runCodeSafe({
+      const r = await runCodeSafe({
         language: langRef.current.toLowerCase(),
         code: codeRef.current,
       });
-      resolveFunc(res);
-
-      setError(res.error);
-      setOutput(res.data);
+      if (r) {
+        resolveFunc(r);
+        setError(r.error);
+        setOutput(r.data);
+      }
     } catch (err) {
       rejectFunc(err);
     }

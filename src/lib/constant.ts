@@ -1,3 +1,4 @@
+export const BASE_URL = "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app/auth"
 export const languages = [
     "Python", "JavaScript", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Go", "Rust",
     "TypeScript", "Kotlin", "Scala", "R", "MATLAB", "Perl", "Haskell", "Lua", "Julia", "Dart"

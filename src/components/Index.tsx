@@ -156,7 +156,30 @@ const Index = ({children}: { children: React.ReactNode }) => {
         } catch (err) {
             rejectFunc(err);
         }
-    }, [runCodeSafe, setError, setOutput]);
+    }, [runCodeSafe]);
+
+    const handler = useCallback(
+        async (e: KeyboardEvent) => {
+            if (e.ctrlKey || e.metaKey) {
+                console.log(e.key);
+                if (e.key == "Enter") {
+                    e.preventDefault();
+                    await run();
+                } else if (e.key === "s") {
+                    e.preventDefault();
+                    await save(snippetId);
+                }
+            }
+        },
+        [run, save, snippetId]
+    );
+
+    useEffect(() => {
+        window.addEventListener("keydown", handler, true);
+        return () => {
+            window.removeEventListener("keydown", handler, true);
+        };
+    }, [handler]);
 
     useEffect(() => {
         (async function () {

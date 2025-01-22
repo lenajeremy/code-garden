@@ -42,31 +42,6 @@ export function CodeEditor() {
     }
   }, [output, error]);
 
-  const handler = useCallback(
-    async (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        console.log(e.key);
-        if (e.key == "Enter") {
-          e.preventDefault();
-          run();
-        } else if (e.key === "s") {
-          e.preventDefault();
-          await save(snippetId);
-        }
-      }
-    },
-    [run, save, snippetId]
-  );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handler, true);
-    console.log("adding event listener");
-    return () => {
-      console.log("removing event listener");
-      window.removeEventListener("keydown", handler);
-    };
-  }, [handler]);
-
   return (
     <ResizablePanelGroup direction="vertical" className="h-full">
       <ResizablePanel defaultSize={70}>

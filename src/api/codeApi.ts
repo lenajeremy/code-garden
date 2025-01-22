@@ -3,7 +3,8 @@ import { createApi } from "quokkajs";
 
 const codeApi = createApi({
     apiName: "codeApi",
-    baseUrl: "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app",
+    // baseUrl: "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app",
+    baseUrl: "http://localhost:3000",
     prepareHeaders(_, headers) {
         const token = localStorage.getItem("TOKEN")
         if (token) {
@@ -22,6 +23,10 @@ const codeApi = createApi({
                 url: `/snippet/${publicId}`,
                 method: "PUT",
                 body,
+            })),
+            deleteSnippet: builder.mutation<string, ApiResponse<Snippet>>(snippetId => ({
+                url: `/snippet/${snippetId}`,
+                method: "DELETE"
             })),
             getSnippet: builder.query<string, ApiResponse<Snippet>>(snippetId => ({
                 url: `/snippet/${snippetId}`
@@ -48,7 +53,7 @@ export const {
     useCreateSnippetMutation,
     useUpdateSnippetMutation,
     useGetSnippetQuery,
-    useRunUnsafeMutation,
+    useDeleteSnippetMutation,
     useRunSafeMutation,
     useGetUserSnippetQuery,
 } = codeApi.actions

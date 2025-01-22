@@ -1,24 +1,23 @@
-'use client'
+"use client";
 
-import MainContext from "@/lib/main-context"
-import { ReactNode, useContext, useEffect, useState } from "react"
-import { useRouter } from 'next/navigation'
+import MainContext from "@/lib/main-context";
+import { ReactNode, useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ProtectedRoute({ children }: { children: ReactNode }) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(true)
-  const { userDetails } = useContext(MainContext)
+  const router = useRouter();
+  const { userDetails, loading } = useContext(MainContext);
 
   useEffect(() => {
-    if (!userDetails) {
-      router.push("/auth/login")
+    console.log({loading, userDetails})
+    if (!loading && !userDetails) {
+      router.replace("/auth/login");
     }
-    setLoading(false)
-  }, [router, userDetails])
+  }, [router, loading, userDetails]);
 
-  if (loading) {
-    return <></>
+  if (loading || !userDetails) {
+    return <></>;
   } else {
-    return children
+    return children;
   }
 }

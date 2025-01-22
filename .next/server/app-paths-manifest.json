@@ -1,3 +1,7 @@
 {
-  "/auth/login/page": "app/auth/login/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/auth/reset-password/page": "app/auth/reset-password/page.js",
+  "/editor/page": "app/editor/page.js",
+  "/editor/[snippet-id]/page": "app/editor/[snippet-id]/page.js"
 }

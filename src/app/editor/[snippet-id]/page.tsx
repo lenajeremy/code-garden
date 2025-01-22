@@ -1,19 +1,10 @@
 "use client"
 
-import { Layout } from "@/components/Layout"
-import ProtectedRoute from "@/components/protected-route"
-import Index from "@/components/Index"
+import React from "react";
+import {CodeEditor} from "@/components/Editor";
 
-export default function SnippetPage({
-  params,
-}: {
-  params: { 'snippet-id': string }
-}) {
-  return (
-    <ProtectedRoute>
-      <Layout>
-        <Index snippetId={params['snippet-id']} />
-      </Layout>
-    </ProtectedRoute>
-  )
+export default function SnippetPage() {
+    return (
+        <CodeEditor/>
+    )
 }

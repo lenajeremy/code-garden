@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Database, Zap } from "lucide-react";
 import Link from "next/link";
+import {Footer} from "@/components/Footer";
 
 export default function Landing() {
   return (

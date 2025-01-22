@@ -135,9 +135,9 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         <div className="flex flex-col space-y-4">
           <Form {...form}>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                onSubmit();
+                await onSubmit();
               }}
               className="space-y-3"
             >

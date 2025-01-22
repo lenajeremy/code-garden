@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Github } from "lucide-react";
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -43,6 +42,7 @@ const Login = () => {
           const payload = jwtDecode(res.data.token) satisfies { user: User };
           updateUserDetails(payload.user);
           toast.success("Signed in successfully", { description: res.message });
+          console.log(payload.user)
           router.replace("/editor");
         }
       }
@@ -64,11 +64,6 @@ const Login = () => {
         </div>
 
         <div className="space-y-4">
-          <Button variant="outline" className="w-full justify-center gap-2">
-            <Github className="h-4 w-4" />
-            Continue with GitHub
-          </Button>
-
           <Button
             variant="outline"
             className="w-full justify-center"

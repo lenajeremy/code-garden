@@ -1,15 +1,11 @@
 "use client"
 
-import { Layout } from "@/components/Layout"
-import ProtectedRoute from "@/components/protected-route"
-import Index from "@/components/Index"
+import React from "react";
 
 export default function Home() {
-  return (
-    <ProtectedRoute>
-      <Layout>
-        <Index snippetId={''} />
-      </Layout>
-    </ProtectedRoute>
-  )
+    return (
+        <div className="flex items-center justify-center h-full">
+            <h4 className="text-xl">No snippet selected.</h4>
+        </div>
+    )
 }

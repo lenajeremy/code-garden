@@ -1,3 +1,4 @@
+"use client"
 import { useCallback, useContext, useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import {
@@ -10,24 +11,7 @@ import EditorContext from "@/lib/editor-context";
 import { useTheme } from "next-themes";
 import { useParams } from "next/navigation";
 
-export const CodeEditor = () => {
-  const params = useParams();
-  const snippetId = params["snippet-id"] as string;
-
-  return (
-    <div className="h-[calc(100vh-82px)] pt-4">
-      {snippetId ? (
-        <Editor />
-      ) : (
-        <div className="flex items-center justify-center h-full">
-          <h4 className="text-xl">No snippet selected.</h4>
-        </div>
-      )}
-    </div>
-  );
-};
-
-function Editor() {
+export function CodeEditor() {
   type ResultTabs = "output" | "errors" | "stats";
   const { code, output, error, stats, setCode, language, run, save } =
     useContext(EditorContext);
@@ -94,6 +78,7 @@ function Editor() {
             onChange={handleEditorChange}
             defaultLanguage={language.toLowerCase()}
             language={language.toLowerCase()}
+            loading={<></>}
             options={{
               minimap: { enabled: false },
               fontSize: settings.fontSize,

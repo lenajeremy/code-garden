@@ -16,7 +16,7 @@ import {
   Twitter,
   X,
 } from "lucide-react";
-import { KeyboardEvent, useContext, useEffect, useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import { toast } from "sonner";
 import {
   Form,
@@ -28,8 +28,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useNavigate, useParams } from "react-router-dom";
-import EditorContext from "@/lib/editor-context";
+
 
 const formSchema = z.object({
   email: z.string(),
@@ -118,7 +117,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
       });
       setEmails([]);
       form.reset();
-    } catch (error) {
+    } catch {
       toast("Error", {
         description: "Failed to send share links. Please try again.",
       });
@@ -136,9 +135,9 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         <div className="flex flex-col space-y-4">
           <Form {...form}>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                onSubmit();
+                await onSubmit();
               }}
               className="space-y-3"
             >

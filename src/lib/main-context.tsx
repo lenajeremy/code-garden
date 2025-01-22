@@ -1,12 +1,16 @@
-import { createContext } from "react";
-import { DefaultLanguage, Language } from "@/lib/constant.ts";
-import { User } from "@/types";
+"use client"
+
+import {createContext} from "react";
+import {User} from "@/types";
 
 const MainContext = createContext<{
-  userDetails?: User;
-  updateUserDetails: (u: User) => void;
+    userDetails?: User;
+    updateUserDetails: (u: User | undefined) => void;
+    loading: boolean
 }>({
-  updateUserDetails: () => {},
+    updateUserDetails: () => {
+    },
+    loading: true,
 });
 
 export default MainContext;

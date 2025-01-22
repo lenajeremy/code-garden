@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+"use client"
+import { useCallback, useContext, useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import {
   ResizableHandle,
@@ -8,26 +9,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditorContext from "@/lib/editor-context";
 import { useTheme } from "next-themes";
-import { useParams } from "react-router-dom";
+import { useParams } from "next/navigation";
 
-export const CodeEditor = () => {
-  const params = useParams();
-  const snippetId = params["snippet-id"];
-
-  return (
-    <div className="h-[calc(100vh-82px)] pt-4">
-      {snippetId ? (
-        <Editor />
-      ) : (
-        <div className="flex items-center justify-center h-full">
-          <h4 className="text-xl">No snippet selected.</h4>
-        </div>
-      )}
-    </div>
-  );
-};
-
-function Editor() {
+export function CodeEditor() {
   type ResultTabs = "output" | "errors" | "stats";
   const { code, output, error, stats, setCode, language, run, save } =
     useContext(EditorContext);
@@ -36,7 +20,7 @@ function Editor() {
   const { resolvedTheme } = useTheme();
 
   const params = useParams();
-  const snippetId = params["snippet-id"];
+  const snippetId = params["snippet-id"] as string;
 
   const settings = {
     fontSize: 14,
@@ -58,31 +42,6 @@ function Editor() {
     }
   }, [output, error]);
 
-  const handler = useCallback(
-    async (e: KeyboardEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        console.log(e.key);
-        if (e.key == "Enter") {
-          e.preventDefault();
-          run();
-        } else if (e.key === "s") {
-          e.preventDefault();
-          await save(snippetId);
-        }
-      }
-    },
-    [run, save, snippetId]
-  );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handler, true);
-    console.log("adding event listener");
-    return () => {
-      console.log("removing event listener");
-      window.removeEventListener("keydown", handler);
-    };
-  }, [handler]);
-
   return (
     <ResizablePanelGroup direction="vertical" className="h-full">
       <ResizablePanel defaultSize={70}>
@@ -94,6 +53,7 @@ function Editor() {
             onChange={handleEditorChange}
             defaultLanguage={language.toLowerCase()}
             language={language.toLowerCase()}
+            loading={<></>}
             options={{
               minimap: { enabled: false },
               fontSize: settings.fontSize,

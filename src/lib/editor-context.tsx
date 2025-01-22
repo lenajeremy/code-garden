@@ -17,7 +17,7 @@ const EditorContext = createContext<{
   };
   setStats: (s: { runtime: string; memory: string }) => void;
   save: (snippetId: string) => Promise<void>;
-  create: () => Promise<Snippet>;
+  create: () => Promise<Snippet | undefined>;
   loading: {
     isCreatingSnippet: boolean;
     isFetchingSnippet: boolean;

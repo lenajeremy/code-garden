@@ -9,7 +9,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {Button} from "@/components/ui/button";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {toast} from "sonner";
 import {Skeleton} from "../ui/skeleton";
 import {CreateSnippetModal} from "./CreateSnippetModal";
@@ -25,8 +25,18 @@ import {
 } from "@/api/codeApi";
 import {Snippet} from "@/types";
 import Link from "next/link";
-import {useRouter} from "next/navigation"
-
+import {useRouter, usePathname} from "next/navigation";
+import EditorContext from "@/lib/editor-context";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function languageImage(language: Language): string {
     if (language == "JavaScript") {
@@ -45,22 +55,21 @@ export const SavedSnippets = () => {
     const [snippets, setSnippets] = useState<Array<Snippet>>([]);
     const [isOpen, setIsOpen] = useState(true);
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [, setRenamingSnippetId] = useState<string | null>(null);
+    const [renamingSnippetId, setRenamingSnippetId] = useState<string | null>(null);
     const [isPopoverOpen, setIsPopOverOpen] = useState(false);
     const [newSnippetName, setNewSnippetName] = useState("");
+    const [showSaveDialog, setShowSaveDialog] = useState(false);
+    const [pendingNavigationPath, setPendingNavigationPath] = useState<string | null>(null);
 
     const {trigger: updateSnippet} = useUpdateSnippetMutation()
-    const {trigger: createSnippet, loading: isCreatingSnippet} =
-        useCreateSnippetMutation();
-    const {
-        data,
-        loading: isLoadingSnippet,
-        error,
-    } = useGetUserSnippetQuery(undefined, {
+    const {trigger: createSnippet, loading: isCreatingSnippet} = useCreateSnippetMutation();
+    const {data, loading: isLoadingSnippet, error} = useGetUserSnippetQuery(undefined, {
         fetchOnRender: true,
     });
     const {trigger: deleteSnippet} = useDeleteSnippetMutation()
     const router = useRouter()
+    const pathname = usePathname()
+    const editorContext = useContext(EditorContext);
 
     useEffect(() => {
         if (error) {
@@ -73,6 +82,36 @@ export const SavedSnippets = () => {
             setSnippets(data.data.snippets);
         }
     }, [data, error]);
+
+    const handleNavigate = (path: string) => {
+        if (editorContext.code && pathname !== path) {
+            setPendingNavigationPath(path);
+            setShowSaveDialog(true);
+        } else {
+            router.push(path);
+        }
+    };
+
+    const handleSaveAndNavigate = async () => {
+        if (pendingNavigationPath) {
+            const currentSnippetId = pathname.split('/').pop();
+            if (currentSnippetId) {
+                await editorContext.save(currentSnippetId);
+                toast.success("Changes saved successfully!");
+            }
+            router.push(pendingNavigationPath);
+            setShowSaveDialog(false);
+            setPendingNavigationPath(null);
+        }
+    };
+
+    const handleDiscardAndNavigate = () => {
+        if (pendingNavigationPath) {
+            router.push(pendingNavigationPath);
+            setShowSaveDialog(false);
+            setPendingNavigationPath(null);
+        }
+    };
 
     const handleCreateSnippet = useCallback(
         async (name: string, language: Language) => {
@@ -192,12 +231,19 @@ export const SavedSnippets = () => {
                                         </div>
                                     </SidebarMenuItem>
                                 ))
-                                : snippets.map((snippet) => (
-                                    <SidebarMenuItem key={snippet.id} className="group">
-                                        <SidebarMenuButton className="w-full" asChild>
-                                            <div className="flex justify-between items-center">
-                                                <Link href={`/editor/${snippet.publicId}`}>
-                                                    <div className="flex items-center min-w-0">
+                                : snippets.map((snippet) => {
+                                    const isActive = pathname === `/editor/${snippet.publicId}`;
+                                    return (
+                                        <SidebarMenuItem key={snippet.id} className="group">
+                                            <SidebarMenuButton 
+                                                className={`w-full relative ${isActive ? 'before:absolute before:left-0 before:top-0 before:h-full before:w-0.5 before:bg-primary' : ''}`} 
+                                                asChild
+                                            >
+                                                <div className="flex justify-between items-center">
+                                                    <div
+                                                        className="flex items-center min-w-0 cursor-pointer"
+                                                        onClick={() => handleNavigate(`/editor/${snippet.publicId}`)}
+                                                    >
                                                         <img
                                                             src={languageImage(
                                                                 snippet.language as Language
@@ -206,80 +252,80 @@ export const SavedSnippets = () => {
                                                             alt={snippet.language}
                                                         />
                                                         <span className="truncate">
-                                {snippet.name || "Untitled Snippet"}
-                              </span>
+                                                            {snippet.name || "Untitled Snippet"}
+                                                        </span>
                                                     </div>
-                                                </Link>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                            >
+                                                                <MoreVertical className="h-4 w-4"/>
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent
+                                                            align="end"
+                                                            className="w-48 text-xs"
                                                         >
-                                                            <MoreVertical className="h-4 w-4"/>
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent
-                                                        align="end"
-                                                        className="w-48 text-xs"
-                                                    >
-                                                        <Popover
-                                                            modal
-                                                            open={isPopoverOpen}
-                                                            onOpenChange={(v) => setIsPopOverOpen(v)}
-                                                        >
-                                                            <PopoverTrigger asChild>
-                                                                <DropdownMenuItem
-                                                                    onSelect={(e) => {
-                                                                        e.preventDefault();
-                                                                        setRenamingSnippetId(snippet.publicId);
-                                                                        setNewSnippetName(snippet.name);
-                                                                        setIsPopOverOpen(true);
-                                                                    }}
-                                                                >
-                                                                    Rename
-                                                                </DropdownMenuItem>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-48 p-2">
-                                                                <form
-                                                                    className="space-y-2"
-                                                                    onSubmit={async (e) => {
-                                                                        e.preventDefault();
-                                                                        await handleRenameSnippet(snippet.publicId);
-                                                                        setIsPopOverOpen(false);
-                                                                    }}
-                                                                >
-                                                                    <Input
-                                                                        type="text"
-                                                                        value={newSnippetName}
-                                                                        onChange={(e) =>
-                                                                            setNewSnippetName(e.target.value)
-                                                                        }
-                                                                        className="w-full p-2 h-8 text-xs"
-                                                                        placeholder="Enter new name"
-                                                                        autoFocus
-                                                                    />
-                                                                    <div className="flex justify-end">
-                                                                        <Button size="sm" className="w-full">
-                                                                            Rename
-                                                                        </Button>
-                                                                    </div>
-                                                                </form>
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                        <DropdownMenuItem
-                                                            className="text-destructive focus:text-destructive"
-                                                            onSelect={() => handleDeleteSnippet(snippet.publicId)}
-                                                        >
-                                                            Delete
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </div>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                ))}
+                                                            <Popover
+                                                                modal
+                                                                open={isPopoverOpen}
+                                                                onOpenChange={(v) => setIsPopOverOpen(v)}
+                                                            >
+                                                                <PopoverTrigger asChild>
+                                                                    <DropdownMenuItem
+                                                                        onSelect={(e) => {
+                                                                            e.preventDefault();
+                                                                            setRenamingSnippetId(snippet.publicId);
+                                                                            setNewSnippetName(snippet.name);
+                                                                            setIsPopOverOpen(true);
+                                                                        }}
+                                                                    >
+                                                                        Rename
+                                                                    </DropdownMenuItem>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-48 p-2">
+                                                                    <form
+                                                                        className="space-y-2"
+                                                                        onSubmit={async (e) => {
+                                                                            e.preventDefault();
+                                                                            await handleRenameSnippet(snippet.publicId);
+                                                                            setIsPopOverOpen(false);
+                                                                        }}
+                                                                    >
+                                                                        <Input
+                                                                            type="text"
+                                                                            value={newSnippetName}
+                                                                            onChange={(e) =>
+                                                                                setNewSnippetName(e.target.value)
+                                                                            }
+                                                                            className="w-full p-2 h-8 text-xs"
+                                                                            placeholder="Enter new name"
+                                                                            autoFocus
+                                                                        />
+                                                                        <div className="flex justify-end">
+                                                                            <Button size="sm" className="w-full">
+                                                                                Rename
+                                                                            </Button>
+                                                                        </div>
+                                                                    </form>
+                                                                </PopoverContent>
+                                                            </Popover>
+                                                            <DropdownMenuItem
+                                                                className="text-destructive focus:text-destructive"
+                                                                onSelect={() => handleDeleteSnippet(snippet.publicId)}
+                                                            >
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    );
+                                })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </CollapsibleContent>
@@ -291,6 +337,25 @@ export const SavedSnippets = () => {
                 onCreate={handleCreateSnippet}
                 loading={isCreatingSnippet}
             />
+
+            <AlertDialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Save Changes?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You have unsaved changes in your current snippet. Would you like to save them before switching to another snippet?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={handleDiscardAndNavigate}>
+                            Don't Save
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={handleSaveAndNavigate}>
+                            Save Changes
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </SidebarGroup>
     );
 };

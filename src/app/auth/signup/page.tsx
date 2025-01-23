@@ -87,6 +87,7 @@ const SignUp = () => {
                 autoComplete="email"
                 autoCorrect="off"
                 value={email}
+                required
                 onChange={(e) => setEmail(e.currentTarget.value)}
               />
             </div>
@@ -99,6 +100,7 @@ const SignUp = () => {
                   autoCapitalize="none"
                   autoCorrect="off"
                   value={password}
+                  required
                   onChange={(e) => setPassword(e.currentTarget.value)}
                 />
               </div>

@@ -94,6 +94,7 @@ const Login = () => {
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect="off"
+                required
               />
             </div>
             {!isEmail && (
@@ -106,6 +107,7 @@ const Login = () => {
                     autoCapitalize="none"
                     autoCorrect="off"
                     value={password}
+                    required
                     onChange={(e) => setPassword(e.currentTarget.value)}
                   />
                 </div>

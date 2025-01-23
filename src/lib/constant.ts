@@ -1,4 +1,5 @@
-export const BASE_URL = "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app"
+// export const BASE_URL = "https://cgs.craftmycv.xyz"
+export const BASE_URL = "http://localhost:3000"
 export const languages = [
     "Python", "JavaScript", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Go", "Rust",
     "TypeScript", "Kotlin", "Scala", "R", "MATLAB", "Perl", "Haskell", "Lua", "Julia", "Dart"
@@ -10,45 +11,45 @@ export const DefaultLanguage: Language = "Python"
 
 export const codeTemplates = {
     javascript: [
-      { name: "Hello World", code: 'console.log("Hello, World!");' },
-      {
-        name: "Array Operations",
-        code: "const numbers = [1, 2, 3];\nnumbers.forEach(n => console.log(n));",
-      },
-      {
-        name: "Basic Function",
-        code: "function greet(name) {\n  return `Hello, ${name}!`;\n}",
-      },
+        { name: "Hello World", code: 'console.log("Hello, World!");' },
+        {
+            name: "Array Operations",
+            code: "const numbers = [1, 2, 3];\nnumbers.forEach(n => console.log(n));",
+        },
+        {
+            name: "Basic Function",
+            code: "function greet(name) {\n  return `Hello, ${name}!`;\n}",
+        },
     ],
     python: [
-      { name: "Hello World", code: 'print("Hello, World!")' },
-      {
-        name: "List Operations",
-        code: "numbers = [1, 2, 3]\nfor n in numbers:\n    print(n)",
-      },
-      {
-        name: "Basic Function",
-        code: 'def greet(name):\n    return f"Hello, {name}!"',
-      },
+        { name: "Hello World", code: 'print("Hello, World!")' },
+        {
+            name: "List Operations",
+            code: "numbers = [1, 2, 3]\nfor n in numbers:\n    print(n)",
+        },
+        {
+            name: "Basic Function",
+            code: 'def greet(name):\n    return f"Hello, {name}!"',
+        },
     ],
     java: [
-      {
-        name: "Hello World",
-        code: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
-      },
-      {
-        name: "Array Operations",
-        code: "int[] numbers = {1, 2, 3};\nfor(int n : numbers) {\n    System.out.println(n);\n}",
-      },
+        {
+            name: "Hello World",
+            code: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}',
+        },
+        {
+            name: "Array Operations",
+            code: "int[] numbers = {1, 2, 3};\nfor(int n : numbers) {\n    System.out.println(n);\n}",
+        },
     ],
     swift: [
-      {
-          name: "Hello World",
-          code: 'print("Hello, World!")'
-      },
-      {
-          name: "Binary Search Tree",
-          code: `class Node {
+        {
+            name: "Hello World",
+            code: 'print("Hello, World!")'
+        },
+        {
+            name: "Binary Search Tree",
+            code: `class Node {
       var value: Int
       var left: Node?
       var right: Node?
@@ -75,10 +76,10 @@ export const codeTemplates = {
               return node
       }
   }`
-      },
-      {
-          name: "Two Sum",
-          code: `func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
+        },
+        {
+            name: "Two Sum",
+            code: `func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
       var dict = [Int: Int]()
       for (i, num) in nums.enumerated() {
               if let j = dict[target - num] {
@@ -88,10 +89,10 @@ export const codeTemplates = {
       }
       return []
   }`
-      },
-      {
-          name: "Trie Implementation",
-          code: `class TrieNode {
+        },
+        {
+            name: "Trie Implementation",
+            code: `class TrieNode {
       var children: [Character: TrieNode] = [:]
       var isEndOfWord = false
   }
@@ -107,10 +108,10 @@ export const codeTemplates = {
               current.isEndOfWord = true
       }
   }`
-      },
-      {
-          name: "Basic Concurrency",
-          code: `func asyncFunction() async {
+        },
+        {
+            name: "Basic Concurrency",
+            code: `func asyncFunction() async {
       await Task.sleep(1_000_000_000)  // Sleep for 1 second
       print("Async task completed")
   }
@@ -119,16 +120,16 @@ export const codeTemplates = {
   Task {
       await asyncFunction()
   }`
-      }
-  ],
-  dart: [
-      {
-          name: "Hello World",
-          code: 'void main() {\n  print("Hello, World!");\n}'
-      },
-      {
-          name: "Binary Search Tree",
-          code: `class Node {
+        }
+    ],
+    dart: [
+        {
+            name: "Hello World",
+            code: 'void main() {\n  print("Hello, World!");\n}'
+        },
+        {
+            name: "Binary Search Tree",
+            code: `class Node {
   int value;
   Node? left;
   Node? right;
@@ -153,10 +154,10 @@ export const codeTemplates = {
       return node;
   }
   }`
-      },
-      {
-          name: "Basic Concurrency",
-          code: `Future<void> asyncFunction() async {
+        },
+        {
+            name: "Basic Concurrency",
+            code: `Future<void> asyncFunction() async {
   await Future.delayed(Duration(seconds: 1));
   print('Async task completed');
   }
@@ -164,16 +165,16 @@ export const codeTemplates = {
   void main() async {
   await asyncFunction();
   }`
-      }
-  ],
-  "c++": [
-      {
-          name: "Hello World",
-          code: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}'
-      },
-      {
-          name: "Binary Search Tree",
-          code: `struct Node {
+        }
+    ],
+    "c++": [
+        {
+            name: "Hello World",
+            code: '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}'
+        },
+        {
+            name: "Binary Search Tree",
+            code: `struct Node {
       int value;
       Node* left;
       Node* right;
@@ -196,10 +197,10 @@ export const codeTemplates = {
               root = insert(root, value);
       }
   };`
-      },
-      {
-          name: "Basic Concurrency",
-          code: `#include <thread>
+        },
+        {
+            name: "Basic Concurrency",
+            code: `#include <thread>
   #include <iostream>
   
   void asyncFunction() {
@@ -212,16 +213,16 @@ export const codeTemplates = {
       t.join();
       return 0;
   }`
-      }
-  ],
-  rust: [
-      {
-          name: "Hello World",
-          code: 'fn main() {\n    println!("Hello, World!");\n}'
-      },
-      {
-          name: "Binary Search Tree",
-          code: `struct Node {
+        }
+    ],
+    rust: [
+        {
+            name: "Hello World",
+            code: 'fn main() {\n    println!("Hello, World!");\n}'
+        },
+        {
+            name: "Binary Search Tree",
+            code: `struct Node {
       value: i32,
       left: Option<Box<Node>>,
       right: Option<Box<Node>>
@@ -250,10 +251,10 @@ export const codeTemplates = {
               }
       }
   }`
-      },
-      {
-          name: "Basic Concurrency",
-          code: `use std::thread;
+        },
+        {
+            name: "Basic Concurrency",
+            code: `use std::thread;
   use std::time::Duration;
   
   fn main() {
@@ -264,6 +265,6 @@ export const codeTemplates = {
       
       handle.join().unwrap();
   }`
-      }
-  ],
-  }
+        }
+    ],
+}

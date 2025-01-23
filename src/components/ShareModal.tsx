@@ -133,7 +133,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
           <DialogTitle>Share</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col space-y-4">
-          <Form {...form}>
+          {/* <Form {...form}>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -189,7 +189,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
                 )}
               />
             </form>
-          </Form>
+          </Form> */}
 
           <div className="flex flex-col mt-4 space-y-2">
             <div className="text-sm font-medium">Share on social media</div>

@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import {
   ResizableHandle,
@@ -9,18 +9,14 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditorContext from "@/lib/editor-context";
 import { useTheme } from "next-themes";
-import { useParams } from "next/navigation";
 
 export function CodeEditor() {
   type ResultTabs = "output" | "errors" | "stats";
-  const { code, output, error, stats, setCode, language, run, save } =
+  const { code, output, error, stats, setCode, language } =
     useContext(EditorContext);
   const [currTab, setCurrTab] = useState<ResultTabs>("output");
   const errors = error.split("\n");
   const { resolvedTheme } = useTheme();
-
-  const params = useParams();
-  const snippetId = params["snippet-id"] as string;
 
   const settings = {
     fontSize: 14,

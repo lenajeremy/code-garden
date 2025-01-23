@@ -210,9 +210,8 @@ export const SavedSnippets = () => {
   const handleDeleteSnippet = async (snippetId: string) => {
     try {
       const res = await deleteSnippet(snippetId);
-      toast.message(JSON.stringify(res));
       if (res && !res.error) {
-        setSnippets(snippets.filter((snippet) => snippet.id !== snippetId));
+        setSnippets(snippets.filter((snippet) => snippet.publicId !== snippetId));
         toast.success("Snippet deleted successfully!");
         router.push("/editor");
       } else {

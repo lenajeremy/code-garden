@@ -1,4 +1,4 @@
-export const BASE_URL = location.hostname.includes("localhost") ? "http://localhost:3000" : "https://cgs.craftmycv.xyz"
+export const BASE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://cgs.craftmycv.xyz"
 // export const languages = [
 //     "Python", "JavaScript", "Java", "C++", "C#", "Ruby", "PHP", "Swift", "Go", "Rust",
 //     "TypeScript", "Kotlin", "Scala", "R", "MATLAB", "Perl", "Haskell", "Lua", "Julia", "Dart"

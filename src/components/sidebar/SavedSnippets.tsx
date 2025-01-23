@@ -51,7 +51,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 function languageImage(language: Language): string {
-  if (language == "JavaScript") {
+  if (language == "javascript") {
     language = "js" as Language;
   } else if (language == "C++") {
     language = "cpp" as Language;
@@ -156,9 +156,9 @@ export const SavedSnippets = () => {
           output: "",
           code: "",
         });
-        console.log(res);
         if (res) {
           setSnippets([res.data, ...snippets]);
+          router.push(`/editor/${res.data.publicId}`);
           toast.success("Snippet created successfully!");
         }
       } catch (err) {
@@ -211,7 +211,9 @@ export const SavedSnippets = () => {
     try {
       const res = await deleteSnippet(snippetId);
       if (res && !res.error) {
-        setSnippets(snippets.filter((snippet) => snippet.publicId !== snippetId));
+        setSnippets(
+          snippets.filter((snippet) => snippet.publicId !== snippetId)
+        );
         toast.success("Snippet deleted successfully!");
         router.push("/editor");
       } else {

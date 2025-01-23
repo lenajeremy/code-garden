@@ -1,5 +1,16 @@
 {
   "pages": {
+    "/auth/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/auth/login/page.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
+    ],
     "/editor/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -10,26 +21,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/editor/layout.js"
     ],
-    "/layout": [
+    "/auth/forgot-password/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
+      "static/chunks/app/auth/forgot-password/page.js"
     ],
-    "/auth/login/page": [
+    "/auth/sign-in-with-token/[token]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/auth/login/page.js"
+      "static/chunks/app/auth/sign-in-with-token/[token]/page.js"
     ],
     "/editor/[snippet-id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/editor/[snippet-id]/page.js"
     ],
-    "/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

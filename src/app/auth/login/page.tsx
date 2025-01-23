@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { User } from "@/types";
 import { jwtDecode } from "jwt-decode";
 import MainContext from "@/lib/main-context";
 import { useRouter } from "next/navigation";
+import { errorDescription } from "@/lib/utils";
 
 const Login = () => {
   const [isEmail, setIsEmail] = useState(false);
@@ -42,12 +43,12 @@ const Login = () => {
           const payload = jwtDecode(res.data.token) satisfies { user: User };
           updateUserDetails(payload.user);
           toast.success("Signed in successfully", { description: res.message });
-          console.log(payload.user)
+          console.log(payload.user);
           router.replace("/editor");
         }
       }
     } catch (err) {
-      toast.error("Login error", { description: JSON.stringify(err) });
+      toast.error("Login error", { description: errorDescription(err) });
     }
   };
 

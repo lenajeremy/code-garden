@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useState } from "react";
 import { useResetPasswordMutation } from "@/api/authApi";
+import { errorDescription } from "@/lib/utils";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
@@ -37,7 +38,7 @@ const ResetPassword = () => {
       router.replace("/auth/login");
     } catch (error) {
       toast.error("Failed to reset password. Try again!", {
-        description: JSON.stringify(error),
+        description: errorDescription(error),
       });
     }
   };
@@ -47,7 +48,7 @@ const ResetPassword = () => {
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
         <div className="w-full max-w-md space-y-8 text-center">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            {JSON.stringify(error)}
+            {errorDescription(error)}
           </h1>
           <p className="text-sm text-muted-foreground">
             Please request a new password reset link

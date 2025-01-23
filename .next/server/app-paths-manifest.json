@@ -1,6 +1,3 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/auth/sign-in-with-token/[token]/page": "app/auth/sign-in-with-token/[token]/page.js",
-  "/editor/page": "app/editor/page.js",
   "/editor/[snippet-id]/page": "app/editor/[snippet-id]/page.js"
 }

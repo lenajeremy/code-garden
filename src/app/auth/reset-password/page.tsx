@@ -31,7 +31,7 @@ const ResetPassword = () => {
       });
       if (res?.error) {
         toast.error("Failed to reset password. Try again!", {
-          description: res.error,
+          description: errorDescription(res.error),
         });
       }
       toast.success("Password successfully reset!");

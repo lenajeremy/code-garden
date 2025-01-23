@@ -24,6 +24,7 @@ const Index = ({ children }: { children: React.ReactNode }) => {
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [stats, setStats] = useState({ runtime: "10ms", memory: "0MB" });
+  const [snippets, setSnippets] = useState<Array<Snippet>>([]);
 
   const langRef = useRef(lang);
   const codeRef = useRef(code);
@@ -83,7 +84,8 @@ const Index = ({ children }: { children: React.ReactNode }) => {
   }, [createSnippet]);
 
   const save = useCallback(
-    async (snippetId: string): Promise<void> => {
+    async (snippetId: string, showToast = true): Promise<void> => {
+      snippetId = decodeURIComponent(snippetId);
       let [resFunc, rejFunc] = [
         (v: unknown) => {
           console.log(v);
@@ -98,11 +100,16 @@ const Index = ({ children }: { children: React.ReactNode }) => {
         rejFunc = _rej;
       });
 
-      toast.promise(promise, {
-        loading: "Saving...",
-        success: "Saved",
-        error: "Failed to save!",
-      });
+      if (showToast) {
+        toast.promise(promise, {
+          loading: "Saving...",
+          success: "Saved",
+          error: "Failed to save!",
+          description: (data) => {
+            return data.error;
+          },
+        });
+      }
 
       try {
         const res = await updateSnippet({
@@ -113,6 +120,16 @@ const Index = ({ children }: { children: React.ReactNode }) => {
           name: "",
         });
         resFunc(res);
+
+        if (res) {
+          setSnippets((snippets) =>
+            snippets.map((snippet) =>
+              snippet.publicId === snippetId
+                ? { ...snippet, code: res?.data.code, one: true }
+                : snippet
+            )
+          );
+        }
       } catch (error) {
         rejFunc(error);
       }
@@ -137,11 +154,15 @@ const Index = ({ children }: { children: React.ReactNode }) => {
       loading: "Executing code...",
       success: "Code run successfully.",
       error: "Failed to run code",
+      description(data) {
+        return data.error;
+      },
     });
 
     try {
       setError("");
       setOutput("");
+      save(snippetId, false);
       const r = await runCodeSafe({
         language: langRef.current.toLowerCase(),
         code: codeRef.current,
@@ -154,12 +175,11 @@ const Index = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       rejectFunc(err);
     }
-  }, [runCodeSafe]);
+  }, [runCodeSafe, save, snippetId]);
 
   const handler = useCallback(
     async (e: KeyboardEvent) => {
       if (e.ctrlKey || e.metaKey) {
-        console.log(e.key);
         if (e.key == "Enter") {
           e.preventDefault();
           await run();
@@ -223,6 +243,8 @@ const Index = ({ children }: { children: React.ReactNode }) => {
           isRunningSnippet,
           isUpdatingSnippet,
         },
+        snippets,
+        setSnippets,
       }}
     >
       <EditorLayout>{children}</EditorLayout>

@@ -43,7 +43,6 @@ const Login = () => {
           const payload = jwtDecode(res.data.token) satisfies { user: User };
           updateUserDetails(payload.user);
           toast.success("Signed in successfully", { description: res.message });
-          console.log(payload.user);
           router.replace("/editor");
         }
       }

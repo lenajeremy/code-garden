@@ -25,6 +25,8 @@ const EditorContext = createContext<{
     isUpdatingSnippet: boolean;
   };
   run: () => void;
+  snippets: Array<Snippet>
+  setSnippets: React.Dispatch<React.SetStateAction<Array<Snippet>>>
 }>({
   language: DefaultLanguage,
   setLanguage: () => {},
@@ -57,6 +59,8 @@ const EditorContext = createContext<{
     isFetchingSnippet: false,
     isUpdatingSnippet: false,
   },
+  snippets: [],
+  setSnippets: () => {}
 });
 
 export default EditorContext;

@@ -36,7 +36,6 @@ import {
   useGetUserSnippetQuery,
   useUpdateSnippetMutation,
 } from "@/api/codeApi";
-import { Snippet } from "@/types";
 import { useRouter, usePathname } from "next/navigation";
 import EditorContext from "@/lib/editor-context";
 import {
@@ -49,6 +48,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { errorDescription } from "@/lib/utils";
 
 function languageImage(language: Language): string {
   if (language == "javascript") {
@@ -64,7 +64,6 @@ function languageImage(language: Language): string {
 }
 
 export const SavedSnippets = () => {
-  const [snippets, setSnippets] = useState<Array<Snippet>>([]);
   const [isOpen, setIsOpen] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [, setRenamingSnippetId] = useState<string | null>(null);
@@ -74,6 +73,7 @@ export const SavedSnippets = () => {
   const [pendingNavigationPath, setPendingNavigationPath] = useState<
     string | null
   >(null);
+  const { snippets, setSnippets, save, code } = useContext(EditorContext);
 
   const { trigger: updateSnippet } = useUpdateSnippetMutation();
   const { trigger: createSnippet, loading: isCreatingSnippet } =
@@ -88,11 +88,12 @@ export const SavedSnippets = () => {
   const { trigger: deleteSnippet } = useDeleteSnippetMutation();
   const router = useRouter();
   const pathname = usePathname();
-  const editorContext = useContext(EditorContext);
 
   useEffect(() => {
     if (error) {
-      toast.error("Failed to load snippets");
+      toast.error("Failed to load snippets", {
+        description: errorDescription(error),
+      });
       setSnippets([]);
       return;
     }
@@ -100,14 +101,14 @@ export const SavedSnippets = () => {
     if (data && data.data) {
       setSnippets(data.data.snippets);
     }
-  }, [data, error]);
+  }, [data, error, setSnippets]);
 
   const handleNavigate = (path: string) => {
     const snippetId = pathname.split("/").pop();
     const snippet = snippets.find((s) => s.publicId === snippetId);
 
     if (
-      snippet?.code !== editorContext.code &&
+      snippet?.code !== code &&
       pathname !== "/editor" &&
       pathname !== path
     ) {
@@ -122,11 +123,11 @@ export const SavedSnippets = () => {
     if (pendingNavigationPath) {
       const currentSnippetId = pathname.split("/").pop();
       if (currentSnippetId) {
-        await editorContext.save(currentSnippetId);
+        await save(currentSnippetId);
         setSnippets((snippets) =>
           snippets.map((s) =>
             s.publicId === currentSnippetId
-              ? { ...s, code: editorContext.code }
+              ? { ...s, code }
               : s
           )
         );
@@ -163,14 +164,14 @@ export const SavedSnippets = () => {
         }
       } catch (err) {
         toast.error("Failed to create snippet", {
-          description: (err as { message: string }).message,
+          description: errorDescription(err),
         });
         console.error(err);
       } finally {
         setShowCreateModal(false);
       }
     },
-    [createSnippet, snippets]
+    [createSnippet, router, setSnippets, snippets]
   );
 
   const handleRenameSnippet = async (snippetId: string) => {
@@ -202,8 +203,10 @@ export const SavedSnippets = () => {
         setNewSnippetName("");
         toast.success("Snippet renamed successfully!");
       }
-    } catch {
-      toast.error("Failed to rename snippet");
+    } catch (error) {
+      toast.error("Failed to rename snippet", {
+        description: errorDescription(error),
+      });
     }
   };
 
@@ -217,10 +220,14 @@ export const SavedSnippets = () => {
         toast.success("Snippet deleted successfully!");
         router.push("/editor");
       } else {
-        toast.error("Failed to delete snippet");
+        toast.error("Failed to delete snippet", {
+          description: errorDescription(res?.error),
+        });
       }
-    } catch {
-      toast.error("Failed to delete snippet");
+    } catch (error) {
+      toast.error("Failed to delete snippet", {
+        description: errorDescription(error),
+      });
     }
   };
 

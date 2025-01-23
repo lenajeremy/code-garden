@@ -34,7 +34,7 @@ const SignInWithToken = () => {
       } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        toast.error(err.message, { description: err.error });
+        toast.error(err.message, { description: errorDescription(err.error) });
       }
     },
     [trigger, updateUserDetails, router]

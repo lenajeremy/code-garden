@@ -1,45 +1,20 @@
 {
   "pages": {
-    "/page": [
+    "/editor/[snippet-id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/layout.css",
-      "static/chunks/app/layout.js"
-    ],
-    "/editor/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/editor/page.js"
+      "static/chunks/app/editor/[snippet-id]/page.js"
     ],
     "/editor/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/editor/layout.js"
     ],
-    "/auth/login/page": [
+    "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/auth/login/page.js"
-    ],
-    "/auth/sign-in-with-token/[token]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/sign-in-with-token/[token]/page.js"
-    ],
-    "/auth/signup/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/signup/page.js"
-    ],
-    "/editor/[snippet-id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/editor/[snippet-id]/page.js"
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ]
   }
 }

@@ -6,7 +6,7 @@ export default function Layout({children}: { children: React.ReactElement }) {
     return (
         <ProtectedRoute>
             <Index>
-                <div className="h-[calc(100vh-82px)] pt-4">
+                <div className="h-[calc(100vh-82px)] pt-4 flex">
                     {children}
                 </div>
             </Index>

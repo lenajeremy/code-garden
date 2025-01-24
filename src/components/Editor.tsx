@@ -40,7 +40,7 @@ export function CodeEditor() {
   }, [output, error]);
 
   return (
-    <div className="relative">
+    <div className="relative flex-1">
       <ResizablePanelGroup direction="vertical" className="h-full">
         <ResizablePanel defaultSize={70}>
           <div className="h-full">

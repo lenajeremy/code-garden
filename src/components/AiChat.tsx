@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { ScrollArea } from "./ui/scroll-area";
-import { Loader, MessageSquare, Copy } from "lucide-react";
+import { Loader, MessageSquare, Copy, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useContext } from "react";
 import EditorContext from "@/lib/editor-context";
@@ -23,8 +23,17 @@ interface Message {
   code?: string;
 }
 
+interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  createdAt: Date;
+}
+
 export function AiChat() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { setCode } = useContext(EditorContext);
@@ -33,21 +42,52 @@ export function AiChat() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const userMessage: Message = { role: "user", content: input };
+    
+    if (!currentConversation) {
+      // Create new conversation
+      const newConversation: Conversation = {
+        id: Date.now().toString(),
+        title: input.slice(0, 30) + (input.length > 30 ? "..." : ""),
+        messages: [userMessage],
+        createdAt: new Date(),
+      };
+      setConversations(prev => [newConversation, ...prev]);
+      setCurrentConversation(newConversation);
+    } else {
+      // Update existing conversation
+      const updatedConversation = {
+        ...currentConversation,
+        messages: [...currentConversation.messages, userMessage],
+      };
+      setCurrentConversation(updatedConversation);
+      setConversations(prev => 
+        prev.map(conv => conv.id === updatedConversation.id ? updatedConversation : conv)
+      );
+    }
+
     setInput("");
     setIsLoading(true);
 
     try {
       // Simulated AI response for now - replace with actual API call
-      const response = {
-        role: "assistant" as const,
+      const response: Message = {
+        role: "assistant",
         content: "Here's a sample code snippet that might help:",
         code: "# Example code\ndef example_function():\n    print('Hello from AI!')",
       };
 
       setTimeout(() => {
-        setMessages((prev) => [...prev, response]);
+        if (currentConversation) {
+          const updatedConversation = {
+            ...currentConversation,
+            messages: [...currentConversation.messages, userMessage, response],
+          };
+          setCurrentConversation(updatedConversation);
+          setConversations(prev => 
+            prev.map(conv => conv.id === updatedConversation.id ? updatedConversation : conv)
+          );
+        }
         setIsLoading(false);
       }, 1000);
     } catch (error) {
@@ -57,8 +97,18 @@ export function AiChat() {
   };
 
   const insertCode = (code: string) => {
-    setCode((prevCode) => prevCode + "\n" + code);
+    setCode(prevCode => prevCode + "\n" + code);
     toast.success("Code inserted successfully!");
+  };
+
+  const startNewChat = () => {
+    setCurrentConversation(null);
+    setShowHistory(false);
+  };
+
+  const openConversation = (conversation: Conversation) => {
+    setCurrentConversation(conversation);
+    setShowHistory(false);
   };
 
   return (
@@ -70,71 +120,115 @@ export function AiChat() {
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle>AI Assistant</SheetTitle>
+          <div className="flex items-center gap-2">
+            {!showHistory && currentConversation && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowHistory(true)}
+                className="animate-fade-in"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            )}
+            <SheetTitle>
+              {showHistory ? "Chat History" : currentConversation?.title || "New Chat"}
+            </SheetTitle>
+          </div>
           <SheetDescription>
-            Ask questions and get code suggestions
+            {showHistory ? "Your previous conversations" : "Ask questions and get code suggestions"}
           </SheetDescription>
         </SheetHeader>
+
         <div className="flex flex-col h-[calc(100vh-200px)] mt-4">
           <ScrollArea className="flex-1 pr-4">
-            <div className="space-y-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex flex-col ${
-                    message.role === "assistant"
-                      ? "items-start"
-                      : "items-end"
-                  }`}
+            {showHistory ? (
+              <div className="space-y-2 animate-fade-in">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={startNewChat}
                 >
+                  + New Chat
+                </Button>
+                {conversations.map((conv) => (
+                  <Button
+                    key={conv.id}
+                    variant="ghost"
+                    className="w-full justify-start text-left"
+                    onClick={() => openConversation(conv)}
+                  >
+                    <div className="truncate">
+                      <p className="font-medium">{conv.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {conv.createdAt.toLocaleDateString()}
+                      </p>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {currentConversation?.messages.map((message, index) => (
                   <div
-                    className={`rounded-lg p-3 max-w-[80%] ${
+                    key={index}
+                    className={`flex flex-col ${
                       message.role === "assistant"
-                        ? "bg-secondary"
-                        : "bg-primary text-primary-foreground"
+                        ? "items-start"
+                        : "items-end"
                     }`}
                   >
-                    <p className="text-sm">{message.content}</p>
-                    {message.code && (
-                      <div className="mt-2 relative">
-                        <pre className="bg-background rounded p-2 text-sm overflow-x-auto">
-                          <code>{message.code}</code>
-                        </pre>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="absolute top-2 right-2"
-                          onClick={() => insertCode(message.code!)}
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    )}
+                    <div
+                      className={`rounded-lg p-3 max-w-[80%] ${
+                        message.role === "assistant"
+                          ? "bg-secondary"
+                          : "bg-primary text-primary-foreground"
+                      }`}
+                    >
+                      <p className="text-sm">{message.content}</p>
+                      {message.code && (
+                        <div className="mt-2 relative">
+                          <pre className="bg-background rounded p-2 text-sm overflow-x-auto">
+                            <code>{message.code}</code>
+                          </pre>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => insertCode(message.code!)}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-secondary rounded-lg p-3">
-                    <Loader className="h-4 w-4 animate-spin" />
+                ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-secondary rounded-lg p-3">
+                      <Loader className="h-4 w-4 animate-spin" />
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </ScrollArea>
-          <form onSubmit={handleSubmit} className="mt-4">
-            <div className="flex gap-2">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask a question..."
-                disabled={isLoading}
-              />
-              <Button type="submit" disabled={isLoading}>
-                Send
-              </Button>
-            </div>
-          </form>
+          {!showHistory && (
+            <form onSubmit={handleSubmit} className="mt-4">
+              <div className="flex gap-2">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask a question..."
+                  disabled={isLoading}
+                />
+                <Button type="submit" disabled={isLoading}>
+                  Send
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       </SheetContent>
     </Sheet>

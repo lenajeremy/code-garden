@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   useRegisterWithEmailMutation,
@@ -10,6 +10,7 @@ import { ApiResponse } from "@/types";
 import React, { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { errorDescription } from "@/lib/utils";
 
 const SignUp = () => {
   const [isEmail, setIsEmail] = useState(false);
@@ -21,6 +22,7 @@ const SignUp = () => {
   const { trigger: registerWithPassword, loading: loadingWithPassword } =
     useRegisterWithPasswordMutation();
 
+
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
@@ -31,12 +33,14 @@ const SignUp = () => {
         res = await registerWithPassword({ email, password });
       }
 
-      toast.success("Mail sent", { description: res?.message });
+      toast.success("Mail sent", {
+        description: "Success! Please check your email to verify your account",
+      });
       console.log(res);
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-      toast.error(err.message, { description: err.error });
+      toast.error(err.message, { description: errorDescription(err) });
     }
   };
 
@@ -87,6 +91,7 @@ const SignUp = () => {
                 autoComplete="email"
                 autoCorrect="off"
                 value={email}
+                required
                 onChange={(e) => setEmail(e.currentTarget.value)}
               />
             </div>
@@ -99,6 +104,7 @@ const SignUp = () => {
                   autoCapitalize="none"
                   autoCorrect="off"
                   value={password}
+                  required
                   onChange={(e) => setPassword(e.currentTarget.value)}
                 />
               </div>

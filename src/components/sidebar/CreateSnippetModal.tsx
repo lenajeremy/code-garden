@@ -19,7 +19,7 @@ import { Language, languages } from "@/lib/constant";
 interface CreateSnippetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (name: string, language: Language) => void;
+  onCreate: (name: string, language: Language) => Promise<void>;
   loading: boolean;
 }
 
@@ -32,9 +32,11 @@ export const CreateSnippetModal = ({
   const [name, setName] = useState("");
   const [language, setLanguage] = useState<Language>("Python");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onCreate(name.trim(), language);
+    await onCreate(name.trim(), language);
+    setName("");
+    setLanguage("");
   };
 
   return (

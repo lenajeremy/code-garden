@@ -9,7 +9,6 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { userDetails, loading } = useContext(MainContext);
 
   useEffect(() => {
-    console.log({loading, userDetails})
     if (!loading && !userDetails) {
       router.replace("/auth/login");
     }

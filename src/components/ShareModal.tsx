@@ -12,27 +12,18 @@ import {
   Mail,
   MessageCircle,
   MessageSquare,
-  Send,
   Twitter,
-  X,
 } from "lucide-react";
-import { KeyboardEvent, useState } from "react";
+// import { useState } from "react";
 import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useForm } from "react-hook-form";
+// import * as z from "zod";
 
-const formSchema = z.object({
-  email: z.string(),
-});
+// const formSchema = z.object({
+//   email: z.string(),
+// });
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -40,16 +31,16 @@ interface ShareModalProps {
 }
 
 export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
-  const [isSending, setIsSending] = useState(false);
-  const [emails, setEmails] = useState<string[]>([]);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-    },
-  });
+  // const [isSending, setIsSending] = useState(false);
+  // const [emails, setEmails] = useState<string[]>([]);
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     email: "",
+  //   },
+  // });
 
-  const snippetUrl = window.location.href
+  const snippetUrl = window.location.href;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(encodeURI(snippetUrl)).then(() => {
@@ -74,57 +65,57 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
     }
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    const input = event.currentTarget;
-    const email = input.value.trim();
+  // const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  //   const input = event.currentTarget;
+  //   const email = input.value.trim();
 
-    if ((event.key === " " || event.key === "Enter") && email) {
-      event.preventDefault();
+  //   if ((event.key === " " || event.key === "Enter") && email) {
+  //     event.preventDefault();
 
-      if (email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        if (!emails.includes(email)) {
-          setEmails([...emails, email]);
-          form.setValue("email", "");
-        }
-      } else {
-        toast.error("Invalid email", {
-          description: "Please enter a valid email address.",
-        });
-      }
-    }
-  };
+  //     if (email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+  //       if (!emails.includes(email)) {
+  //         setEmails([...emails, email]);
+  //         form.setValue("email", "");
+  //       }
+  //     } else {
+  //       toast.error("Invalid email", {
+  //         description: "Please enter a valid email address.",
+  //       });
+  //     }
+  //   }
+  // };
 
-  const removeEmail = (emailToRemove: string) => {
-    setEmails(emails.filter((email) => email !== emailToRemove));
-  };
+  // const removeEmail = (emailToRemove: string) => {
+  //   setEmails(emails.filter((email) => email !== emailToRemove));
+  // };
 
-  const onSubmit = async () => {
-    if (emails.length === 0) {
-      toast.error("No emails added", {
-        description: "Please add at least one email address.",
-      });
-      return;
-    }
+  // const onSubmit = async () => {
+  //   if (emails.length === 0) {
+  //     toast.error("No emails added", {
+  //       description: "Please add at least one email address.",
+  //     });
+  //     return;
+  //   }
 
-    setIsSending(true);
-    try {
-      // Here you would typically make an API call to send the emails
-      console.log("Sharing via email to:", emails);
-      toast.success("Share links sent!", {
-        description: `Emails have been sent to ${emails.length} recipient${
-          emails.length > 1 ? "s" : ""
-        }.`,
-      });
-      setEmails([]);
-      form.reset();
-    } catch {
-      toast("Error", {
-        description: "Failed to send share links. Please try again.",
-      });
-    } finally {
-      setIsSending(false);
-    }
-  };
+  //   setIsSending(true);
+  //   try {
+  //     // Here you would typically make an API call to send the emails
+  //     console.log("Sharing via email to:", emails);
+  //     toast.success("Share links sent!", {
+  //       description: `Emails have been sent to ${emails.length} recipient${
+  //         emails.length > 1 ? "s" : ""
+  //       }.`,
+  //     });
+  //     setEmails([]);
+  //     form.reset();
+  //   } catch {
+  //     toast("Error", {
+  //       description: "Failed to send share links. Please try again.",
+  //     });
+  //   } finally {
+  //     setIsSending(false);
+  //   }
+  // };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -133,7 +124,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
           <DialogTitle>Share</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col space-y-4">
-          <Form {...form}>
+          {/* <Form {...form}>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -189,7 +180,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
                 )}
               />
             </form>
-          </Form>
+          </Form> */}
 
           <div className="flex flex-col mt-4 space-y-2">
             <div className="text-sm font-medium">Share on social media</div>

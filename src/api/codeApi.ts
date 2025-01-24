@@ -1,10 +1,10 @@
+import { BASE_URL } from "@/lib/constant";
 import { ApiResponse, Snippet } from "@/types";
 import { createApi } from "quokkajs";
 
 const codeApi = createApi({
     apiName: "codeApi",
-    // baseUrl: "https://c844-2a02-c206-2241-107-00-1.ngrok-free.app",
-    baseUrl: "http://localhost:3000",
+    baseUrl: BASE_URL,
     prepareHeaders(_, headers) {
         const token = localStorage.getItem("TOKEN")
         if (token) {
@@ -35,13 +35,13 @@ const codeApi = createApi({
                 url: "/snippets/mine",
                 method: "GET"
             })),
-            runUnsafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
-                url: "/run-unsafe",
-                method: "POST",
-                body: args
-            })),
+            // runUnsafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
+            //     url: "/run-unsafe",
+            //     method: "POST",
+            //     body: args
+            // })),
             runSafe: builder.mutation<{ code: string, language: string }, ApiResponse<string>>(args => ({
-                url: "/run-safe",
+                url: "/code-runner",
                 method: "POST",
                 body: args
             }))

@@ -5,7 +5,7 @@ export const BASE_URL = process.env.NODE_ENV === "development" ? "http://localho
 // ] as const;
 
 export const languages = [
-    "Go", "Typescript", "JavaScript", "Python"
+    "Go", "Typescript", "JavaScript", "Python", "Cpp", "Rust", "Swift", "Ruby"
 ]
 
 export type Language = typeof languages[number];

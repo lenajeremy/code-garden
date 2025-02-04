@@ -11,7 +11,7 @@ import {
   SheetTitle,
 } from "./ui/sheet";
 import { ScrollArea } from "./ui/scroll-area";
-import { Loader, MessageSquare, Copy, ArrowLeft, BotIcon } from "lucide-react";
+import { Loader, MessageSquare, Copy, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useContext } from "react";
 import EditorContext from "@/lib/editor-context";
@@ -31,7 +31,8 @@ interface Conversation {
 
 export function AiChat() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
+  const [currentConversation, setCurrentConversation] =
+    useState<Conversation | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +44,7 @@ export function AiChat() {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
-    
+
     if (!currentConversation) {
       // Create new conversation
       const newConversation: Conversation = {
@@ -52,7 +53,7 @@ export function AiChat() {
         messages: [userMessage],
         createdAt: new Date(),
       };
-      setConversations(prev => [newConversation, ...prev]);
+      setConversations((prev) => [newConversation, ...prev]);
       setCurrentConversation(newConversation);
     } else {
       // Update existing conversation
@@ -61,8 +62,10 @@ export function AiChat() {
         messages: [...currentConversation.messages, userMessage],
       };
       setCurrentConversation(updatedConversation);
-      setConversations(prev => 
-        prev.map(conv => conv.id === updatedConversation.id ? updatedConversation : conv)
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === updatedConversation.id ? updatedConversation : conv
+        )
       );
     }
 
@@ -84,8 +87,10 @@ export function AiChat() {
             messages: [...currentConversation.messages, userMessage, response],
           };
           setCurrentConversation(updatedConversation);
-          setConversations(prev => 
-            prev.map(conv => conv.id === updatedConversation.id ? updatedConversation : conv)
+          setConversations((prev) =>
+            prev.map((conv) =>
+              conv.id === updatedConversation.id ? updatedConversation : conv
+            )
           );
         }
         setIsLoading(false);
@@ -112,125 +117,134 @@ export function AiChat() {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="fixed bottom-4 right-4">
-          <MessageSquare className="h-5 w-5" />
-        </Button>
-      </SheetTrigger>
-      <SheetContent className="w-[400px] sm:w-[540px]">
-        <SheetHeader>
-          <div className="flex items-center gap-2">
-            {!showHistory && currentConversation && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowHistory(true)}
-                className="animate-fade-in"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            )}
-            <SheetTitle>
-              {showHistory ? "Chat History" : currentConversation?.title || "New Chat"}
-            </SheetTitle>
-          </div>
-          <SheetDescription>
-            {showHistory ? "Your previous conversations" : "Ask questions and get code suggestions"}
-          </SheetDescription>
-        </SheetHeader>
-
-        <div className="flex flex-col h-[calc(100vh-200px)] mt-4">
-          <ScrollArea className="flex-1 pr-4">
-            {showHistory ? (
-              <div className="space-y-2 animate-fade-in">
+    <>
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed bottom-4 right-4"
+        onClick={() => setOpen(true)}
+      >
+        <MessageSquare className="h-5 w-5" />
+      </Button>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent className="w-[400px] sm:w-[540px]">
+          <SheetHeader>
+            <div className="flex items-center gap-2">
+              {!showHistory && currentConversation && (
                 <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={startNewChat}
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowHistory(true)}
+                  className="animate-fade-in"
                 >
-                  + New Chat
+                  <ArrowLeft className="h-5 w-5" />
                 </Button>
-                {conversations.map((conv) => (
+              )}
+              <SheetTitle>
+                {showHistory
+                  ? "Chat History"
+                  : currentConversation?.title || "New Chat"}
+              </SheetTitle>
+            </div>
+            <SheetDescription>
+              {showHistory
+                ? "Your previous conversations"
+                : "Ask questions and get code suggestions"}
+            </SheetDescription>
+          </SheetHeader>
+
+          <div className="flex flex-col h-[calc(100vh-200px)] mt-4">
+            <ScrollArea className="flex-1 pr-4">
+              {showHistory ? (
+                <div className="space-y-2 animate-fade-in">
                   <Button
-                    key={conv.id}
-                    variant="ghost"
-                    className="w-full justify-start text-left"
-                    onClick={() => openConversation(conv)}
+                    variant="outline"
+                    className="w-full justify-start"
+                    onClick={startNewChat}
                   >
-                    <div className="truncate">
-                      <p className="font-medium">{conv.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {conv.createdAt.toLocaleDateString()}
-                      </p>
-                    </div>
+                    + New Chat
                   </Button>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {currentConversation?.messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex flex-col ${
-                      message.role === "assistant"
-                        ? "items-start"
-                        : "items-end"
-                    }`}
-                  >
+                  {conversations.map((conv) => (
+                    <Button
+                      key={conv.id}
+                      variant="ghost"
+                      className="w-full justify-start text-left"
+                      onClick={() => openConversation(conv)}
+                    >
+                      <div className="truncate">
+                        <p className="font-medium">{conv.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {conv.createdAt.toLocaleDateString()}
+                        </p>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {currentConversation?.messages.map((message, index) => (
                     <div
-                      className={`rounded-lg p-3 max-w-[80%] ${
+                      key={index}
+                      className={`flex flex-col ${
                         message.role === "assistant"
-                          ? "bg-secondary"
-                          : "bg-primary text-primary-foreground"
+                          ? "items-start"
+                          : "items-end"
                       }`}
                     >
-                      <p className="text-sm">{message.content}</p>
-                      {message.code && (
-                        <div className="mt-2 relative">
-                          <pre className="bg-background rounded p-2 text-sm overflow-x-auto">
-                            <code>{message.code}</code>
-                          </pre>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute top-2 right-2"
-                            onClick={() => insertCode(message.code!)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
+                      <div
+                        className={`rounded-lg p-3 max-w-[80%] ${
+                          message.role === "assistant"
+                            ? "bg-secondary"
+                            : "bg-primary text-primary-foreground"
+                        }`}
+                      >
+                        <p className="text-sm">{message.content}</p>
+                        {message.code && (
+                          <div className="mt-2 relative">
+                            <pre className="bg-background rounded p-2 text-sm overflow-x-auto">
+                              <code>{message.code}</code>
+                            </pre>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2"
+                              onClick={() => insertCode(message.code!)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-secondary rounded-lg p-3">
-                      <Loader className="h-4 w-4 animate-spin" />
+                  ))}
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="bg-secondary rounded-lg p-3">
+                        <Loader className="h-4 w-4 animate-spin" />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
+            </ScrollArea>
+            {!showHistory && (
+              <form onSubmit={handleSubmit} className="mt-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask a question..."
+                    disabled={isLoading}
+                  />
+                  <Button type="submit" disabled={isLoading}>
+                    Send
+                  </Button>
+                </div>
+              </form>
             )}
-          </ScrollArea>
-          {!showHistory && (
-            <form onSubmit={handleSubmit} className="mt-4">
-              <div className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask a question..."
-                  disabled={isLoading}
-                />
-                <Button type="submit" disabled={isLoading}>
-                  Send
-                </Button>
-              </div>
-            </form>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }

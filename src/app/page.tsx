@@ -1,10 +1,9 @@
-
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Database, Github, Zap } from "lucide-react";
 import Link from "next/link";
-import {Footer} from "@/components/Footer";
+import { Footer } from "@/components/Footer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,13 +16,13 @@ import { useContext } from "react";
 import MainContext from "@/lib/main-context";
 
 export default function Landing() {
-  const { userDetails } = useContext(MainContext);
+  const { userDetails, updateUserDetails } = useContext(MainContext);
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
       .toUpperCase();
   };
 
@@ -38,13 +37,22 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-6">
             <nav className="hidden md:flex items-center gap-6">
-              <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link
+                href="/docs"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Documentation
               </Link>
-              <Link href="/templates" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link
+                href="/templates"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Templates
               </Link>
-              <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <Link
+                href="/pricing"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
                 Pricing
               </Link>
             </nav>
@@ -52,24 +60,41 @@ export default function Landing() {
               {userDetails ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                    >
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>
-                          {getInitials(userDetails.firstName + ' ' + userDetails.lastName)}
+                          {getInitials(
+                            userDetails.firstName + " " + userDetails.lastName
+                          )}
                         </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem>
-                      <Link href="#" className="w-full">Dashboard</Link>
+                      <Link href="#" className="w-full">
+                        Dashboard
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link href="#" className="w-full">Settings</Link>
+                      <Link href="#" className="w-full">
+                        Settings
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                      <Link href="/auth/logout" className="w-full">Log out</Link>
+                      <p
+                        onClick={() => {
+                          localStorage.removeItem("TOKEN");
+                          updateUserDetails(undefined);
+                        }}
+                      >
+                        Log out
+                      </p>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -100,8 +125,9 @@ export default function Landing() {
           <span className="text-primary">Share everywhere</span>
         </h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Your go-to platform for creating and sharing code snippets. Write, format,
-          and share your code in seconds with perfect syntax highlighting.
+          Your go-to platform for creating and sharing code snippets. Write,
+          format, and share your code in seconds with perfect syntax
+          highlighting.
         </p>
         <div className="flex gap-4 justify-center">
           <Button asChild size="lg">
@@ -110,7 +136,11 @@ export default function Landing() {
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <a href="https://github.com/lenajeremy/code-garden" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://github.com/lenajeremy/code-garden"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Github className="mr-2 h-4 w-4" /> Star on GitHub
             </a>
           </Button>
@@ -131,7 +161,8 @@ export default function Landing() {
             <Code2 className="w-12 h-12 text-primary mb-4" />
             <h3 className="text-xl font-semibold mb-2">Syntax Highlighting</h3>
             <p className="text-muted-foreground">
-              Support for all major programming languages with beautiful highlighting.
+              Support for all major programming languages with beautiful
+              highlighting.
             </p>
           </div>
           <div className="p-6 rounded-lg border bg-card">

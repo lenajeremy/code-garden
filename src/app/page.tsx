@@ -110,7 +110,7 @@ export default function Landing() {
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/lenajeremy/code-garden" target="_blank" rel="noopener noreferrer">
               <Github className="mr-2 h-4 w-4" /> Star on GitHub
             </a>
           </Button>

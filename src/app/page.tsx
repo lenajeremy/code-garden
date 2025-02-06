@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -94,18 +95,18 @@ export default function Landing() {
           Now in public beta
         </span>
         <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white">
-          Build in a weekend
+          Write once
           <br />
-          <span className="text-primary">Scale to millions</span>
+          <span className="text-primary">Share everywhere</span>
         </h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          The fastest way to build and deploy your code snippets. Start coding
-          in seconds, share instantly, and collaborate seamlessly.
+          Your go-to platform for creating and sharing code snippets. Write, format,
+          and share your code in seconds with perfect syntax highlighting.
         </p>
         <div className="flex gap-4 justify-center">
           <Button asChild size="lg">
             <Link href="/editor">
-              Start Building <ArrowRight className="ml-2" />
+              Start Writing <ArrowRight className="ml-2" />
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
@@ -121,23 +122,23 @@ export default function Landing() {
         <div className="grid md:grid-cols-3 gap-8">
           <div className="p-6 rounded-lg border bg-card">
             <Zap className="w-12 h-12 text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
+            <h3 className="text-xl font-semibold mb-2">Instant Sharing</h3>
             <p className="text-muted-foreground">
-              Start coding instantly with our optimized development environment.
+              Create and share your code snippets with a single click.
             </p>
           </div>
           <div className="p-6 rounded-lg border bg-card">
             <Code2 className="w-12 h-12 text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Multiple Languages</h3>
+            <h3 className="text-xl font-semibold mb-2">Syntax Highlighting</h3>
             <p className="text-muted-foreground">
-              Support for all major programming languages and frameworks.
+              Support for all major programming languages with beautiful highlighting.
             </p>
           </div>
           <div className="p-6 rounded-lg border bg-card">
             <Database className="w-12 h-12 text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Scalable Storage</h3>
+            <h3 className="text-xl font-semibold mb-2">Version History</h3>
             <p className="text-muted-foreground">
-              Your code is safely stored and easily accessible anytime.
+              Track changes and access previous versions of your snippets.
             </p>
           </div>
         </div>
@@ -146,24 +147,24 @@ export default function Landing() {
       {/* Framework Support */}
       <section className="container px-4 py-16 text-center">
         <h2 className="text-2xl md:text-4xl font-bold mb-8">
-          Use with any framework
+          Supports all major languages
         </h2>
         <div className="flex flex-wrap justify-center gap-8 text-muted-foreground">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-muted rounded-full" />
-            React
+            JavaScript
           </div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-muted rounded-full" />
-            Vue
+            Python
           </div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-muted rounded-full" />
-            Angular
+            Ruby
           </div>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-muted rounded-full" />
-            Svelte
+            Java
           </div>
         </div>
       </section>

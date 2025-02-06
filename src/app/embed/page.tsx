@@ -4,8 +4,9 @@ import { useGetSnippetQuery } from "@/api/codeApi";
 import { EmbedSnippet } from "@/components/EmbedSnippet";
 import { Loader } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function () {
+function Embed() {
   const searchParams = useSearchParams();
   const snippetId = searchParams.get("snippetId")!;
 
@@ -48,4 +49,12 @@ export default function () {
   }
 
   return <div />;
+}
+
+export default function () {
+  return (
+    <Suspense>
+      <Embed />
+    </Suspense>
+  );
 }

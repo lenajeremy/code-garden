@@ -1,3 +1,4 @@
+'use client'
 
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, Database, Github, Zap } from "lucide-react";
@@ -60,10 +61,10 @@ export default function Landing() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem>
-                      <Link href="/dashboard" className="w-full">Dashboard</Link>
+                      <Link href="#" className="w-full">Dashboard</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link href="/settings" className="w-full">Settings</Link>
+                      <Link href="#" className="w-full">Settings</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem>

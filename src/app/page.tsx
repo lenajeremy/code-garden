@@ -1,14 +1,49 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code2, Database, Zap } from "lucide-react";
+import { ArrowRight, Code2, Database, Github, Zap } from "lucide-react";
 import Link from "next/link";
 import {Footer} from "@/components/Footer";
 
 export default function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header className="border-b">
+        <div className="container px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Code2 className="h-6 w-6 text-primary" />
+            <span className="font-semibold">CodeGarden</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="/docs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Documentation
+              </Link>
+              <Link href="/templates" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Templates
+              </Link>
+              <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Pricing
+              </Link>
+            </nav>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/auth/login">Sign In</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link href="/auth/signup">Sign Up</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="container px-4 py-24 mx-auto text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+        <span className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6 inline-block">
+          Now in public beta
+        </span>
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white">
           Build in a weekend
           <br />
           <span className="text-primary">Scale to millions</span>
@@ -24,7 +59,9 @@ export default function Landing() {
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <Link href="/auth/login">Sign In</Link>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Github className="mr-2 h-4 w-4" /> Star on GitHub
+            </a>
           </Button>
         </div>
       </section>
@@ -82,47 +119,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-24">
-        <div className="container px-4 py-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Features</li>
-                <li>Pricing</li>
-                <li>Documentation</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>About</li>
-                <li>Blog</li>
-                <li>Careers</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Community</li>
-                <li>Contact</li>
-                <li>Support</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Privacy</li>
-                <li>Terms</li>
-                <li>License</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 Code Garden Explorer. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

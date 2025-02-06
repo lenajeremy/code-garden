@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { DefaultLanguage, Language } from "./constant";
+import { Language } from "./constant";
 import { Snippet } from "@/types";
 
 const EditorContext = createContext<{
@@ -25,10 +25,12 @@ const EditorContext = createContext<{
     isUpdatingSnippet: boolean;
   };
   run: () => void;
-  snippets: Array<Snippet>
-  setSnippets: React.Dispatch<React.SetStateAction<Array<Snippet>>>
+  snippets: Array<Snippet>;
+  setSnippets: React.Dispatch<React.SetStateAction<Array<Snippet>>>;
+  mode: "edit" | "view-only";
+  setMode: (mode: "edit" | "view-only") => void;
 }>({
-  language: DefaultLanguage,
+  language: "Python",
   setLanguage: () => {},
   code: "",
   setCode: () => {},
@@ -60,7 +62,9 @@ const EditorContext = createContext<{
     isUpdatingSnippet: false,
   },
   snippets: [],
-  setSnippets: () => {}
+  setSnippets: () => {},
+  mode: "edit",
+  setMode: () => {},
 });
 
 export default EditorContext;

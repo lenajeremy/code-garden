@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 // import { useState } from "react";
 import { toast } from "sonner";
+import { useUpdateSnippetMutation } from "@/api/codeApi";
+import { useContext } from "react";
+import EditorContext from "@/lib/editor-context";
 
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import { useForm } from "react-hook-form";
@@ -39,10 +42,29 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   //     email: "",
   //   },
   // });
+  const hrefList = location.href.split("/")
+  const snippetId = hrefList.at(hrefList.length - 1)!
 
-  const snippetUrl = window.location.href;
+  const snippetUrl = `${window.location.origin}/view/${snippetId}`
+
+  const { language } = useContext(EditorContext);
+
+  const { trigger } = useUpdateSnippetMutation();
+
+  const share = async function () {
+    // share updates the visibility of a snippet
+    trigger({
+      publicId: snippetId,
+      language: language.toLowerCase(),
+      visibility: "public",
+      code: "",
+      output: "",
+      name: "",
+    });
+  };
 
   const handleCopyLink = () => {
+    share();
     navigator.clipboard.writeText(encodeURI(snippetUrl)).then(() => {
       toast.success("Link copied!", {
         description: "The URL has been copied to your clipboard.",
@@ -51,6 +73,8 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   };
 
   const handleSocialShare = (platform: string) => {
+    share();
+
     const url = encodeURI(snippetUrl);
     const text = encodeURIComponent("Check out this code!");
 

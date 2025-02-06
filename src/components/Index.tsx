@@ -1,8 +1,14 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { EditorLayout } from "@/components/EditorLayout";
-import { DefaultLanguage, Language } from "@/lib/constant";
+import { Language } from "@/lib/constant";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import EditorContext from "@/lib/editor-context";
@@ -14,17 +20,35 @@ import {
 } from "@/api/codeApi";
 import { Snippet } from "@/types";
 import { errorDescription } from "@/lib/utils";
+import MainContext from "@/lib/main-context";
 
-const Index = ({ children }: { children: React.ReactNode }) => {
+type DefaultOptions = {
+  mode?: "edit" | "view-only";
+  code?: string;
+  lang?: string;
+};
+const Index = ({
+  children,
+  defaultOptions,
+}: {
+  children: React.ReactNode;
+  defaultOptions?: DefaultOptions;
+}) => {
   const router = useRouter();
+  const { userDetails } = useContext(MainContext);
   const snippetId = useParams<{ "snippet-id": string }>()["snippet-id"];
 
-  const [lang, setLang] = useState(DefaultLanguage);
-  const [code, setCode] = useState(`# Write your code here...`);
+  const [lang, setLang] = useState(defaultOptions?.lang || "Python");
+  const [code, setCode] = useState(
+    defaultOptions?.code || `# Write your code here...`
+  );
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [stats, setStats] = useState({ runtime: "10ms", memory: "0MB" });
   const [snippets, setSnippets] = useState<Array<Snippet>>([]);
+  const [mode, setMode] = useState<"edit" | "view-only">(
+    defaultOptions?.mode || "edit"
+  );
 
   const langRef = useRef(lang);
   const codeRef = useRef(code);
@@ -46,7 +70,7 @@ const Index = ({ children }: { children: React.ReactNode }) => {
     useRunSafeMutation();
 
   const { loading: isFetchingSnippet, trigger: fetchSnippet } =
-    useGetSnippetQuery(snippetId);
+    useGetSnippetQuery({ snippetId }, { fetchOnRender: false });
 
   const create = useCallback(async (): Promise<Snippet | undefined> => {
     let [resFunc, rejFunc] = [
@@ -166,6 +190,7 @@ const Index = ({ children }: { children: React.ReactNode }) => {
       const r = await runCodeSafe({
         language: langRef.current.toLowerCase(),
         code: codeRef.current,
+        requireAuth: !!userDetails,
       });
       if (r) {
         resolveFunc(r);
@@ -175,7 +200,7 @@ const Index = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       rejectFunc(err);
     }
-  }, [runCodeSafe, save, snippetId]);
+  }, [runCodeSafe, save, snippetId, userDetails]);
 
   const handler = useCallback(
     async (e: KeyboardEvent) => {
@@ -203,7 +228,10 @@ const Index = ({ children }: { children: React.ReactNode }) => {
     (async function () {
       if (!snippetId) return;
       try {
-        const res = await fetchSnippet(snippetId);
+        const res = await fetchSnippet({
+          snippetId,
+          requireAuth: mode === "edit",
+        });
         if (res && res.status == 200) {
           setCode(res.data.code);
           setLang(
@@ -224,6 +252,8 @@ const Index = ({ children }: { children: React.ReactNode }) => {
   return (
     <EditorContext.Provider
       value={{
+        mode,
+        setMode,
         language: lang,
         setLanguage: setLang,
         code,

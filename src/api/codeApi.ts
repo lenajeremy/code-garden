@@ -28,20 +28,19 @@ const codeApi = createApi({
                 url: `/snippet/${snippetId}`,
                 method: "DELETE"
             })),
-            getSnippet: builder.query<string, ApiResponse<Snippet>>(snippetId => ({
-                url: `/snippet/${snippetId}`
+            getSnippet: builder.query<{ snippetId: string, requireAuth?: boolean }, ApiResponse<Snippet>>(({ snippetId, requireAuth }) => ({
+                url: `/snippet/${snippetId}${!requireAuth ? "/no-auth" : ""}`
+            })),
+            forkSnippet: builder.mutation<string, ApiResponse<Snippet>>(snippetId => ({
+                url: `/snippet/${snippetId}/fork`,
+                method: "POST",
             })),
             getUserSnippet: builder.query<void, ApiResponse<{ total: number, snippets: Array<Snippet> }>>(() => ({
                 url: "/snippets/mine",
                 method: "GET"
             })),
-            // runUnsafe: builder.mutation<Omit<Snippet, "output">, ApiResponse<string>>(args => ({
-            //     url: "/run-unsafe",
-            //     method: "POST",
-            //     body: args
-            // })),
-            runSafe: builder.mutation<{ code: string, language: string }, ApiResponse<string>>(args => ({
-                url: "/code-runner",
+            runSafe: builder.mutation<{ code: string, language: string, requireAuth?: boolean }, ApiResponse<string>>(({ requireAuth, ...args }) => ({
+                url: `/code-runner${!requireAuth ? "/no-auth" : ""}`,
                 method: "POST",
                 body: args
             }))
@@ -56,4 +55,5 @@ export const {
     useDeleteSnippetMutation,
     useRunSafeMutation,
     useGetUserSnippetQuery,
+    useForkSnippetMutation,
 } = codeApi.actions

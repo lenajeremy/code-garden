@@ -49,6 +49,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { errorDescription } from "@/lib/utils";
+import MainContext from "@/lib/main-context";
 
 function languageImage(language: Language): string {
   if (language == "javascript") {
@@ -74,6 +75,7 @@ export const SavedSnippets = () => {
     string | null
   >(null);
   const { snippets, setSnippets, save, code } = useContext(EditorContext);
+  const { userDetails } = useContext(MainContext);
 
   const { trigger: updateSnippet } = useUpdateSnippetMutation();
   const { trigger: createSnippet, loading: isCreatingSnippet } =
@@ -83,7 +85,7 @@ export const SavedSnippets = () => {
     loading: isLoadingSnippet,
     error,
   } = useGetUserSnippetQuery(undefined, {
-    fetchOnRender: true,
+    fetchOnRender: !!userDetails,
   });
   const { trigger: deleteSnippet } = useDeleteSnippetMutation();
   const router = useRouter();
@@ -107,11 +109,7 @@ export const SavedSnippets = () => {
     const snippetId = pathname.split("/").pop();
     const snippet = snippets.find((s) => s.publicId === snippetId);
 
-    if (
-      snippet?.code !== code &&
-      pathname !== "/editor" &&
-      pathname !== path
-    ) {
+    if (snippet?.code !== code && pathname !== "/editor" && pathname !== path) {
       setPendingNavigationPath(path);
       setShowSaveDialog(true);
     } else {
@@ -126,9 +124,7 @@ export const SavedSnippets = () => {
         await save(currentSnippetId);
         setSnippets((snippets) =>
           snippets.map((s) =>
-            s.publicId === currentSnippetId
-              ? { ...s, code }
-              : s
+            s.publicId === currentSnippetId ? { ...s, code } : s
           )
         );
         toast.success("Changes saved successfully!");

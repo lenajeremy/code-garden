@@ -1,10 +1,8 @@
-"use client"
+"use client";
 
 import React from "react";
-import {CodeEditor} from "@/components/Editor";
+import { CodeEditor } from "@/components/Editor";
 
 export default function SnippetPage() {
-    return (
-        <CodeEditor/>
-    )
+  return <CodeEditor />;
 }

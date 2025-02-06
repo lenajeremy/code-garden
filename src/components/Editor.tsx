@@ -13,7 +13,7 @@ import { AiChat } from "./AiChat";
 
 export function CodeEditor() {
   type ResultTabs = "output" | "errors" | "stats";
-  const { code, output, error, stats, setCode, language } =
+  const { code, output, error, stats, setCode, language, mode } =
     useContext(EditorContext);
   const [currTab, setCurrTab] = useState<ResultTabs>("output");
   const errors = error.split("\n");
@@ -53,6 +53,15 @@ export function CodeEditor() {
               language={language.toLowerCase()}
               loading={<></>}
               options={{
+                autoClosingBrackets: "languageDefined",
+                bracketPairColorization: {
+                  enabled: true,
+                },
+                readOnly: mode == "view-only",
+                readOnlyMessage: {
+                  value:
+                    "Editing not allowed. You can fork snippet if you want to make changes.",
+                },
                 minimap: { enabled: false },
                 fontSize: settings.fontSize,
                 lineNumbers: settings.showLineNumbers ? "on" : "off",

@@ -8,7 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Loader, Menu, Play, Settings2, Share2 } from "lucide-react";
+import {
+  GitForkIcon,
+  Loader,
+  Menu,
+  Play,
+  Settings2,
+  Share2,
+} from "lucide-react";
 import { useContext, useState } from "react";
 import {
   Dialog,
@@ -30,7 +37,15 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 import { ShareModal } from "./ShareModal";
 import EditorContext from "@/lib/editor-context";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import MainContext from "@/lib/main-context";
+import { useForkSnippetMutation } from "@/api/codeApi";
 
 interface ExecutionSettings {
   timeout: number;
@@ -38,11 +53,17 @@ interface ExecutionSettings {
 }
 
 export const MenuBar = () => {
-  const { language, setLanguage, loading, run } = useContext(EditorContext);
+  const { language, setLanguage, loading, run, mode, setSnippets } =
+    useContext(EditorContext);
+
+  const { userDetails } = useContext(MainContext);
   const params = useParams();
-  const snippetId = params["snippet-id"];
+  const router = useRouter();
+
+  const snippetId = params["snippet-id"] as string;
 
   const { toggleSidebar } = useSidebar();
+  const { trigger, loading: isForkingSnippet } = useForkSnippetMutation();
   const [settings, setSettings] = useState<ExecutionSettings>({
     timeout: 5000,
     memoryLimit: 128,
@@ -55,6 +76,14 @@ export const MenuBar = () => {
     );
     if (selectedLanguage) {
       setLanguage(selectedLanguage);
+    }
+  };
+
+  const handleForkSnippet = async function () {
+    const res = await trigger(snippetId);
+    if (res) {
+      setSnippets((snippets) => [res.data, ...snippets]);
+      router.replace(`/editor/${res.data.publicId}`);
     }
   };
 
@@ -97,8 +126,16 @@ export const MenuBar = () => {
               ))}
             </SelectContent>
           </Select>
+
           {loading.isFetchingSnippet && (
             <Loader className="animate-spin w-4 h-4" />
+          )}
+
+          {!loading.isFetchingSnippet && mode == "view-only" && (
+            <div className="flex items-center gap-2 ml-4">
+              <div className="h-2 w-2 bg-yellow-500 rounded-full" />
+              <small className="bg-opacity-80">You are in read-only mode</small>
+            </div>
           )}
         </div>
 
@@ -205,10 +242,42 @@ export const MenuBar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="outline" onClick={() => setIsShareModalOpen(true)}>
-              <Share2 className="h-4 w-4 mr-2" />
-              Share
-            </Button>
+            {mode == "edit" && (
+              <Button
+                variant="outline"
+                onClick={() => setIsShareModalOpen(true)}
+              >
+                <Share2 className="h-4 w-4 mr-2" />
+                Share
+              </Button>
+            )}
+
+            {mode == "view-only" &&
+              (userDetails ? (
+                <Button
+                  variant="outline"
+                  loading={isForkingSnippet}
+                  onClick={handleForkSnippet}
+                >
+                  <GitForkIcon className="h-4 w-4 mr-2" />
+                  Fork
+                </Button>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button variant="outline" onClick={() => {}}>
+                        <GitForkIcon className="h-4 w-4 mr-2" />
+                        Fork
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      You need to sign in to fork snippet.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+
             {/*  <Dialog>
                             <DialogTrigger asChild>
                                 <Button variant="outline" size="icon">

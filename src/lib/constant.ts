@@ -9,7 +9,6 @@ export const languages = [
 ]
 
 export type Language = typeof languages[number];
-export const DefaultLanguage: Language = "Python"
 
 
 export const codeTemplates = {

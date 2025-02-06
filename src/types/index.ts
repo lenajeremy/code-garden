@@ -24,4 +24,5 @@ export type Snippet = {
     id: string
     name: string
     publicId: string
+    visibility?: string
 }
